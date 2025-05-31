@@ -1,0 +1,98 @@
+.main-add-btn {
+  background-color: #fff;
+  border: none;
+  color: #A1AAE1;
+  padding: 12px 24px;
+  text-align: center;
+  font-size: 16px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-decoration: none;
+  font-weight: 530;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.main-add-btn:hover {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 1%;
+}
+
+.main-profile-btn {
+  background-color: #fff;
+  border: none;
+  color: #A1AAE1;
+  padding: 12px 24px;
+  text-align: center;
+  align-items: center;
+  font-size: 16px;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  transition: 0.3s ease;
+  text-decoration: none;
+  font-weight: 530;
+  font-family: 'Montserrat', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.main-profile-btn:hover {
+  background-color: #007bff;
+  color: #fff;
+  transition: 0.3s ease;
+}
+
+.profile-icon {
+    border: none;
+    color: #A1AAE1;
+    text-align: center;
+    cursor: pointer;
+    height: 30px;
+    flex-shrink: 0;
+    transition: 0.3s ease;
+}
+
+.profile-icon:hover {
+   color: #fff;
+}
+
+.sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  font-size: 16px;
+  color: #A1AAE1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+}
+
+.sidebar-btn:hover {
+  background-color: #e9ecef;
+  color: #007bff;
+}
+
+.sidebar-btn.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.sidebar-icon {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}

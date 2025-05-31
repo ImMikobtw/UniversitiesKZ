@@ -1,0 +1,28 @@
+.container {
+  align-items: center;
+  height: 85px;
+  display: flex;
+  padding: 0;
+  margin: 0;
+}
+
+.header {
+  background-color: #fff;
+  padding: 0 20px;
+  z-index: 1000;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 85px;
+  position: fixed;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.header-logo {
+  margin: 0;
+  padding: 0;
+  height: 70px;
+  width: 150px;
+  cursor: pointer;
+}

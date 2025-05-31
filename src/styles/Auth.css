@@ -1,0 +1,97 @@
+.auth-input-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-label {
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #444;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.auth-input-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%; /* Ensure container respects parent width */
+}
+
+.auth-input {
+    padding: 12px 16px; /* Revert to original padding for all inputs */
+    border: 1.5px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    width: 100%;
+    box-sizing: border-box; /* Prevent padding from increasing width */
+}
+
+/* Apply extra padding only to password inputs with toggler */
+.auth-input-container:has(.password-toggle) .auth-input {
+    padding-right: 40px; /* Space for toggler only when present */
+}
+
+.auth-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}
+
+.auth-input.error {
+    border-color: #ff4d4d;
+}
+
+.auth-input.error:focus {
+    border-color: #ff4d4d;
+    box-shadow: 0 0 0 3px rgba(255, 77, 77, 0.2);
+}
+
+.auth-error {
+    margin-top: 4px;
+    color: red;
+    font-size: 12px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+    padding: 0;
+    outline: none;
+    transition: color 0.3s;
+}
+
+.password-toggle:hover,
+.password-toggle:focus {
+    color: #007bff;
+}
+
+.auth-select {
+    padding: 12px 16px;
+    border: 1.5px solid #ccc;
+    border-radius: 10px;
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    width: 100%;
+    background-color: #fff;
+    appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23444" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    box-sizing: border-box;
+}
+
+.auth-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+}

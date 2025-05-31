@@ -1,0 +1,57 @@
+.year {
+    font-size: 1.5em;
+    color: #fff;
+    text-align: center;
+    background-color: #E6CD4F;
+    border: none;
+    border-radius: 15px;
+    flex-grow: 0;
+    flex-shrink: 0;
+    padding: 3px 10px;
+    cursor: default;
+    margin: 30px 0 0 15px;
+}
+
+.year-container {
+    display: flex;
+    align-items: center;
+    cursor: default;
+    margin-left: 15px;
+}
+
+.Logo {
+    padding: 0;
+    margin: 0;
+}
+
+.logo-text {
+    margin: 0 0 0 30px;
+    padding: 0;
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #2374EE;
+    font-family: 'Montserrat', sans-serif;
+    cursor: default;
+}
+
+.after-logo {
+    margin: 0;
+    padding: 0;
+    font-size: 0.8em;
+    font-weight: 700;
+}
+
+.after-logo-pr {
+    margin: 0 0 0 30px;
+    padding: 0;
+    font-size: 1em;
+    font-weight: 500;
+    color: black;
+    font-family: 'Montserrat', sans-serif;
+    cursor: default;
+}
+
+.logo-container {
+    margin: 0 0 0 17%;
+    padding: 0;
+}

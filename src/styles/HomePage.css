@@ -1,0 +1,47 @@
+.homepage-container {
+  display: flex;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.main-layout {
+  display: flex;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+}
+
+.content-area {
+  margin-top: 85px;
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+  background-color: #f5f5f5;
+  min-height: calc(100vh - 85px);
+  transition: margin-left 0.3s ease;
+}
+
+.content-area.sidebar-open {
+  margin-left: 250px;
+}
+
+.content-area.sidebar-closed {
+  margin-left: 0;
+}
+
+@media (max-width: 768px) {
+  .content-area {
+    margin-top: 60px;
+  }
+
+  .content-area.sidebar-open {
+    margin-left: 0; 
+  }
+
+  .content-area.sidebar-closed {
+    margin-left: 0;
+  }
+}

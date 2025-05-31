@@ -1,0 +1,84 @@
+.university-card {
+  background-color: #fff;
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 97%;
+  position: relative;
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 2;
+    gap: 30%;
+}
+
+.university-card:hover {
+  transform: translateY(-3px);
+}
+
+.university-actions {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  transition: color 0.3s ease;
+}
+
+.edit-btn:hover {
+  color: #007bff;
+}
+
+.delete-btn:hover {
+  color: #dc3545;
+}
+
+.university-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  width: 550px;
+}
+
+.university-logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+}
+
+.university-title h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+}
+
+.university-title .abbreviation {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #777;
+  margin: 5px 0 0 0;
+}
+
+.university-details p {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #555;
+  margin: 8px 0;
+}
+
