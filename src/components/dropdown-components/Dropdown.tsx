@@ -1,16 +1,17 @@
-import { useState, useEffect } from "react";
-import "../../styles/Auth.css";
-import { getMockUniversities, type University } from "../../MockData"; 
-
+import { useState, useEffect } from 'react';
+import '../../styles/Auth.css';
+import apiClient from '../../api/apiClient';
+import { type University } from '../../MockData'; 
 
 type DropdownProps = {
   label: string;
   id: string;
   value: string;
   onChange: (value: string) => void;
+  disabled?: boolean; 
 };
 
-const Dropdown = ({ label, id, value, onChange }: DropdownProps) => {
+const Dropdown = ({ label, id, value, onChange, disabled }: DropdownProps) => {
   const [object, setObject] = useState<University[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -20,11 +21,13 @@ const Dropdown = ({ label, id, value, onChange }: DropdownProps) => {
       try {
         setLoading(true);
         setError(null);
-
-        const data = await getMockUniversities();
-        setObject([{ value: "", label: "Выберите университет" }, ...data]);
+        const response = await apiClient.get('/universities');
+        setObject([{ value: '', label: 'Выберите университет' }, ...response.data.map((uni: any) => ({
+          value: uni.code,
+          label: uni.name_ru,
+        }))]);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Что-то пошло не так");
+        setError(err instanceof Error ? err.message : 'Что-то пошло не так');
       } finally {
         setLoading(false);
       }
@@ -48,7 +51,7 @@ const Dropdown = ({ label, id, value, onChange }: DropdownProps) => {
           className="auth-input auth-select"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          disabled={loading}
+          disabled={loading || disabled}
         >
           {object.map((item) => (
             <option key={item.value} value={item.value}>
