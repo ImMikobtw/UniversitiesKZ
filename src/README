@@ -1,0 +1,9 @@
+There are simple instructions how to start the application for the development:
+
+1. run "npm install"
+2. run "npm install axios"
+3. run "npm install react-router-dom"
+4. run "npm install react-select"
+5. run "npm install svgr"
+
+To run the application, you need to run "npm run dev" at the terminal
