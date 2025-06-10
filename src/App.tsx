@@ -20,25 +20,19 @@ function App() {
           <Route
             path="/main/*"
             element={
-              <ProtectedRoute>
                 <HomePage />
-              </ProtectedRoute>
             }
           />
           <Route
             path="/add-university"
             element={
-              <ProtectedRoute>
                 <AddUniversityPage />
-              </ProtectedRoute>
             }
           />
           <Route
             path="/"
             element={
-              <ProtectedRoute>
                 <Navigate to="/main/main" replace />
-              </ProtectedRoute>
             }
           />
           <Route path="*" element={<div>404: Page Not Found</div>} />
