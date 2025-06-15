@@ -24,7 +24,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const accessToken = localStorage.getItem('accessToken');
     const refreshToken = localStorage.getItem('refreshToken');
     if (accessToken && refreshToken) {
-      // Simulate token validation
       if (refreshToken === mockToken.refreshToken) {
         setIsAuthenticated(true);
         setUniversityCode(mockDecodedToken.universityCode);
@@ -46,23 +45,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem('accessToken', mockToken.accessToken);
     localStorage.setItem('refreshToken', mockToken.refreshToken);
     setIsAuthenticated(true);
-    setUniversityId(undefined); // Not used in mock
+    setUniversityId(undefined); 
     setUniversityCode(user.universityCode);
     navigate('/main');
     return true;
   };
 
   const register = async (firstName: string, lastName: string, email: string, university: string, password: string) => {
-    // Simulate registration by checking if email exists
     if (mockUsers.some((u) => u.email === email)) {
       throw new Error('Email already exists');
     }
-    // For simplicity, we'll use the same mock token
     localStorage.setItem('accessToken', mockToken.accessToken);
     localStorage.setItem('refreshToken', mockToken.refreshToken);
     setIsAuthenticated(true);
     setUniversityId(undefined);
-    setUniversityCode(university); // Assume university is the code (e.g., KBTU)
+    setUniversityCode(university); 
     navigate('/main');
     return true;
   };
