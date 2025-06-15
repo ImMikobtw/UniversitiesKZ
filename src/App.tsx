@@ -5,9 +5,12 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import AddUniversityPage from "./pages/AddUniversityPage";
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+const ProtectedRoute = ({ children, requiresAuth = true }: { children: React.ReactNode; requiresAuth?: boolean }) => {
   const { isAuthenticated } = useAuth();
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+  if (requiresAuth) {
+    return isAuthenticated ? children : <Navigate to="/login" replace />;
+  }
+  return !isAuthenticated ? children : <Navigate to="/main" replace />;
 };
 
 function App() {
@@ -15,24 +18,42 @@ function App() {
     <Router>
       <AuthProvider>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/login"
+            element={
+              <ProtectedRoute requiresAuth={false}>
+                <LoginPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <ProtectedRoute requiresAuth={false}>
+                <RegisterPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/main/*"
             element={
+              <ProtectedRoute>
                 <HomePage />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/add-university"
             element={
+              <ProtectedRoute>
                 <AddUniversityPage />
+              </ProtectedRoute>
             }
           />
           <Route
             path="/"
             element={
-                <Navigate to="/main/main" replace />
+              <Navigate to="/main/main" replace />
             }
           />
           <Route path="*" element={<div>404: Page Not Found</div>} />

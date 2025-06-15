@@ -1,32 +1,166 @@
 .uni-page {
-  padding: 0 20px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
   align-items: center;
-}
-
-.uni-page h1 {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 28px;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 20px;
+  min-height: calc(100vh - 85px);
 }
 
 .uni-page-actions {
-  margin-bottom: 20px;
-  width: 100%;
-  max-width: 1200px;
   display: flex;
-  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-.universities-list {
+.edit-btn, .view-btn {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+}
+
+.edit-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.view-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
+.view-btn:hover {
+  background-color: #5a6268;
+}
+
+.uni-page.error,
+.uni-page.loading {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  color: #ff4d4d;
+  text-align: center;
+}
+
+.uni-page.loading {
+  color: #333;
+}
+
+.uni-full-view {
+  width: 100%;
+  max-width: 800px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.uni-full-view h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.uni-details {
   display: flex;
   flex-direction: column;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 20px;
-  width: 100%;
-  max-width: 1200px;
+}
+
+.uni-logo img {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.uni-info h3 {
+  font-size: 18px;
+  margin: 10px 0 5px;
+  color: #007bff;
+}
+
+.uni-info p {
+  margin: 5px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.uni-info a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.uni-info a:hover {
+  text-decoration: underline;
+}
+
+.uni-info ul {
+  list-style: disc;
+  padding-left: 20px;
+  margin: 5px 0;
+}
+
+.uni-info ul li {
+  font-size: 16px;
+  color: #333;
+}
+
+.uni-gallery {
+  margin-top: 20px;
+}
+
+.uni-gallery h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #007bff;
+}
+
+.gallery-images {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.gallery-image {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .uni-page {
+    padding: 10px;
+  }
+
+  .uni-full-view {
+    padding: 15px;
+  }
+
+  .uni-logo img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .gallery-image {
+    width: 120px;
+    height: 120px;
+  }
 }

@@ -1,70 +1,55 @@
-export interface University {
-  value: string;
-  label: string;
-}
-
-export const mockUniversities: University[] = [
-  { value: "1", label: "Казахский Национальный Университет им. Аль-Фараби" },
-  { value: "2", label: "Евразийский Национальный Университет им. Л.Н. Гумилева" },
-  { value: "3", label: "Назарбаев Университет" },
-  { value: "4", label: "КазНУИ" },
-  { value: "5", label: "КБТУ" },
-];
-
-export interface MockUser {
-  firstName: string;
-  lastName: string;
-  email: string;
-  university: string;
-  password: string;
-}
-
-export const mockUsers: MockUser[] = [
+export const mockUsers = [
   {
-    firstName: "Мирас",
-    lastName: "Тлеусерик",
-    email: "tleusserik@miko.kz",
-    university: "1",
-    password: "mikomiko",
+    email: "kbtu@uni.kz",
+    password: "Test1234",
+    firstName: "KBTU",
+    lastName: "Admin",
+    universityCode: "KBTU",
   },
 ];
 
-export const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export const mockUniversities = [
+  {
+    id: 1,
+    code: "KBTU",
+    name_kz: "Қазақ-Британ Техникалық Университеті",
+    name_ru: "Казахстанско-Британский Технический Университет",
+    abbreviation_kz: "ҚБТУ",
+    abbreviation_ru: "КБТУ",
+    address: "ул. Толе би 59, Алматы, Казахстан",
+    website: "https://kbtu.kz",
+    phone: "+7 (727) 272-73-74",
+    email: "info@kbtu.kz",
+    whatsapp: "+7 (727) 272-73-74",
+    status: "частный",
+    student_count: 5000,
+    ent_score: 100,
+    qs_score: "301-350",
+    logo_url: "https://via.placeholder.com/60",
+    map_point: "43.238949, 76.945127",
+    description: "Ведущий технический университет в Казахстане.",
+    services: ["общежитие", "бесплатный Wi-Fi", "столовая", "библиотека"],
+  },
+];
 
-export const getMockUniversities = async (): Promise<University[]> => {
-  await delay(500);
-  return mockUniversities;
+export const mockSpecialties = [
+  {
+    universityId: 1,
+    code: "CS101",
+    name: "Computer Science",
+    description: "Программа по компьютерным наукам.",
+    entScore: 120,
+  },
+];
+
+export const mockToken = {
+  accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJrYnR1QHVuaS5reiIsInVuaXZlcnNpdHlDb2RlIjoiS0JUVSIsImlhdCI6MTcyOTAxNzI2MCwiZXhwIjoxNzI5MTAzNjYwfQ.dummy_signature",
+  refreshToken: "mock_refresh_token",
 };
 
-export const mockLogin = async (email: string, password: string) => {
-  await delay(500);
-  const user = mockUsers.find((u) => u.email === email && u.password === password);
-  if (user) {
-    return { success: true };
-  }
-  return { success: false, error: "Неверный email или пароль" };
+export const mockDecodedToken = {
+  sub: "kbtu@uni.kz",
+  universityCode: "KBTU",
+  iat: 1729017260,
+  exp: 1729103660,
 };
-
-export const mockRegister = async (
-  firstName: string,
-  lastName: string,
-  email: string,
-  university: string,
-  password: string
-) => {
-  await delay(500);
-  const existingUser = mockUsers.find((u) => u.email === email);
-  if (existingUser) {
-    return { success: false, error: "Пользователь с таким email уже существует" };
-  }
-  const newUser: MockUser = { firstName, lastName, email, university, password };
-  mockUsers.push(newUser);
-  localStorage.setItem("mockUsers", JSON.stringify(mockUsers));
-  return { success: true };
-};
-
-const savedUsers = localStorage.getItem("mockUsers");
-if (savedUsers) {
-  mockUsers.length = 0;
-  mockUsers.push(...JSON.parse(savedUsers));
-}

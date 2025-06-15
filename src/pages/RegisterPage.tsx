@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AuthInput from "../components/input-components/AuthInput";
-import Dropdown from "../components/dropdown-components/Dropdown";
 import "../styles/RegisterPage.css";
 
 const RegisterPage = () => {
@@ -91,12 +90,6 @@ const RegisterPage = () => {
                 placeholder="Введите вашу корпоративную почту"
                 value={email}
                 onChange={(value) => setEmail(value)}
-              />
-              <Dropdown
-                id="university"
-                label="Представительство (Университет)"
-                value={university}
-                onChange={(value) => setUniversity(value)}
               />
             </div>
             <div className="third-fourth">

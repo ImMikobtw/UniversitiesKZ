@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import apiClient from '../api/apiClient';
+import { mockUsers, mockToken, mockDecodedToken } from '../MockData';
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -8,90 +8,71 @@ interface AuthContextType {
   register: (firstName: string, lastName: string, email: string, university: string, password: string) => Promise<boolean>;
   logout: () => void;
   getToken: () => string | null;
+  universityId?: number;
+  universityCode?: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [universityId, setUniversityId] = useState<number | undefined>(undefined);
+  const [universityCode, setUniversityCode] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
     const refreshToken = localStorage.getItem('refreshToken');
     if (accessToken && refreshToken) {
-      apiClient
-        .post('/auth/validate', { token: refreshToken })
-        .then((response) => {
-          if (response.data.valid) {
-            setIsAuthenticated(true);
-          } else {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            setIsAuthenticated(false);
-          }
-        })
-        .catch(() => {
-          localStorage.removeItem('accessToken');
-          localStorage.removeItem('refreshToken');
-          setIsAuthenticated(false);
-        });
+      // Simulate token validation
+      if (refreshToken === mockToken.refreshToken) {
+        setIsAuthenticated(true);
+        setUniversityCode(mockDecodedToken.universityCode);
+      } else {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        setIsAuthenticated(false);
+        setUniversityId(undefined);
+        setUniversityCode(undefined);
+      }
     }
   }, []);
 
   const login = async (email: string, password: string) => {
-    try {
-      const response = await apiClient.post('/auth/login', {
-        email,
-        password,
-      });
-
-      const { success, token, refreshToken } = response.data;
-
-      if (success && token && refreshToken) {
-        localStorage.setItem('accessToken', token);
-        localStorage.setItem('refreshToken', refreshToken);
-        setIsAuthenticated(true);
-        navigate('/main');
-        return true;
-      }
+    const user = mockUsers.find((u) => u.email === email && u.password === password);
+    if (!user) {
       throw new Error('Invalid credentials');
-    } catch (error) {
-      console.error('Login error:', error);
-      throw error instanceof Error ? error : new Error('Server error');
     }
+    localStorage.setItem('accessToken', mockToken.accessToken);
+    localStorage.setItem('refreshToken', mockToken.refreshToken);
+    setIsAuthenticated(true);
+    setUniversityId(undefined); // Not used in mock
+    setUniversityCode(user.universityCode);
+    navigate('/main');
+    return true;
   };
 
   const register = async (firstName: string, lastName: string, email: string, university: string, password: string) => {
-    try {
-      const response = await apiClient.post('/auth/register', {
-        firstName,
-        lastName,
-        email,
-        university,
-        password,
-      });
-
-      const { success, token, refreshToken } = response.data;
-
-      if (success && token && refreshToken) {
-        localStorage.setItem('accessToken', token);
-        localStorage.setItem('refreshToken', refreshToken);
-        setIsAuthenticated(true);
-        navigate('/main');
-        return true;
-      }
-      throw new Error('Registration failed');
-    } catch (error) {
-      console.error('Registration error:', error);
-      throw error instanceof Error ? error : new Error('Server error');
+    // Simulate registration by checking if email exists
+    if (mockUsers.some((u) => u.email === email)) {
+      throw new Error('Email already exists');
     }
+    // For simplicity, we'll use the same mock token
+    localStorage.setItem('accessToken', mockToken.accessToken);
+    localStorage.setItem('refreshToken', mockToken.refreshToken);
+    setIsAuthenticated(true);
+    setUniversityId(undefined);
+    setUniversityCode(university); // Assume university is the code (e.g., KBTU)
+    navigate('/main');
+    return true;
   };
 
   const logout = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     setIsAuthenticated(false);
+    setUniversityId(undefined);
+    setUniversityCode(undefined);
     navigate('/login');
   };
 
@@ -99,35 +80,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return localStorage.getItem('accessToken');
   };
 
-  apiClient.interceptors.response.use(
-    (response) => response,
-    async (error) => {
-      if (error.response?.status === 401) {
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (refreshToken) {
-          try {
-            const response = await apiClient.post('/auth/refresh', { refreshToken });
-            const { token: newAccessToken } = response.data;
-            localStorage.setItem('accessToken', newAccessToken);
-            return apiClient(error.config);
-          } catch (refreshError) {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            setIsAuthenticated(false);
-            navigate('/login');
-          }
-        } else {
-          localStorage.removeItem('accessToken');
-          setIsAuthenticated(false);
-          navigate('/login');
-        }
-      }
-      return Promise.reject(error);
-    }
-  );
-
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, register, logout, getToken }}>
+    <AuthContext.Provider value={{ isAuthenticated, login, register, logout, getToken, universityId, universityCode }}>
       {children}
     </AuthContext.Provider>
   );
