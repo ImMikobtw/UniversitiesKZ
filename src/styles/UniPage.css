@@ -1,56 +1,49 @@
 .uni-page {
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: 'Montserrat', sans-serif;
   min-height: calc(100vh - 85px);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  font-size: 24px;
+  color: #333;
+  margin: 0;
 }
 
 .uni-page-actions {
   display: flex;
   gap: 10px;
-  margin-bottom: 20px;
 }
 
-.edit-btn {
-  display: flex;
-  align-items: center;
-  padding: 8px 16px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
+.edit-btn, .view-btn {
+  padding: 10px 20px;
+  font-size: 16px;
   font-weight: 500;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.view-btn {
+  transition: background-color 0.2s, transform 0.1s;
   display: flex;
   align-items: center;
-  padding: 8px 16px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
 }
 
 .edit-btn {
-  background-color: #007bff;
+  background: linear-gradient(90deg, #007bff, #00d4ff);
   color: white;
 }
 
 .edit-btn:hover {
-  background-color: #0056b3;
-}
-
-.edit-icon {
-  width: 16px;
-  height: 16px;
-  margin-right: 8px;
+  background: linear-gradient(90deg, #0056b3, #00b7e6);
+  transform: translateY(-1px);
 }
 
 .view-btn {
@@ -60,102 +53,130 @@
 
 .view-btn:hover {
   background-color: #5a6268;
+  transform: translateY(-1px);
+}
+
+.edit-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
 }
 
 .uni-page.error,
 .uni-page.loading {
-  font-family: 'Montserrat', sans-serif;
   font-size: 18px;
   color: #ff4d4d;
   text-align: center;
+  padding: 20px;
 }
 
 .uni-page.loading {
   color: #333;
 }
 
-.uni-full-view {
-  width: 100%;
-  max-width: 800px;
+.uni-card-view {
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  font-family: 'Montserrat', sans-serif;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
-.uni-full-view h2 {
-  font-size: 24px;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.uni-details {
+.uni-full-view {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  gap: 30px;
+}
+
+.view-section {
+  margin-bottom: 20px;
+}
+
+.view-section h2 {
+  font-size: 20px;
+  color: #007bff;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 5px;
+}
+
+.view-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 
-.uni-logo img {
-  width: 100px;
-  height: 100px;
-  object-fit: contain;
-  border-radius: 4px;
+.view-group {
+  display: flex;
+  flex-direction: column;
 }
 
-.uni-info h3 {
-  font-size: 18px;
-  margin: 10px 0 5px;
-  color: #007bff;
+.view-group.full-width {
+  grid-column: span 2;
 }
 
-.uni-info p {
-  margin: 5px 0;
-  font-size: 16px;
+.view-group .label {
+  font-size: 14px;
+  font-weight: 600;
   color: #333;
+  margin-bottom: 8px;
 }
 
-.uni-info a {
+.view-group span, .view-group a {
+  font-size: 16px;
+  color: #555;
+}
+
+.view-group a {
   color: #007bff;
   text-decoration: none;
 }
 
-.uni-info a:hover {
+.view-group a:hover {
   text-decoration: underline;
 }
 
-.uni-info ul {
+.view-group img.logo-image {
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.services-list {
   list-style: disc;
   padding-left: 20px;
-  margin: 5px 0;
+  margin: 0;
 }
 
-.uni-info ul li {
+.services-list li {
   font-size: 16px;
-  color: #333;
+  color: #555;
+  margin-bottom: 8px;
 }
 
-.uni-gallery {
-  margin-top: 20px;
-}
-
-.uni-gallery h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-  color: #007bff;
-}
-
-.gallery-images {
-  display: flex;
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 10px;
-  flex-wrap: wrap;
 }
 
 .gallery-image {
-  width: 150px;
-  height: 150px;
+  width: 100%;
+  height: 200px;
   object-fit: cover;
   border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.gallery-image:hover {
+  transform: scale(1.05);
 }
 
 @media (max-width: 768px) {
@@ -163,17 +184,31 @@
     padding: 10px;
   }
 
-  .uni-full-view {
-    padding: 15px;
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
   }
 
-  .uni-logo img {
-    width: 80px;
-    height: 80px;
+  .uni-page-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .edit-btn, .view-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .view-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .view-group.full-width {
+    grid-column: span 1;
   }
 
   .gallery-image {
-    width: 120px;
-    height: 120px;
+    height: 150px;
   }
 }

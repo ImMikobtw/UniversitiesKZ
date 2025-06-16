@@ -441,15 +441,15 @@ const AddUniversityPage = () => {
                 <h2>Добавить специальность</h2>
                 <div className="form-grid">
                   <div className="form-group">
-                    <label>Код специальности</label>
-                    <input
+                     <label>Код специальности</label>
+                     <input
                       type="text"
                       name="code"
                       value={specialtyForm.code}
                       onChange={handleSpecialtyInputChange}
                       placeholder="Введите код специальности"
                       required
-                    />
+                     />
                   </div>
                   <div className="form-group">
                     <label>Название специальности</label>

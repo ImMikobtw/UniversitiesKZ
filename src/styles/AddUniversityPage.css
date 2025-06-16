@@ -8,9 +8,11 @@
 
 .page-header {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 20px;
   margin-bottom: 30px;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .back-btn {
@@ -22,6 +24,7 @@
   font-size: 16px;
   font-weight: 500;
   transition: color 0.2s;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .back-btn:hover {
@@ -41,6 +44,7 @@
 
 .tabs {
   display: flex;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .tab-btn {
@@ -53,6 +57,7 @@
   color: #333;
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .tab-btn:hover {
@@ -95,6 +100,7 @@
   display: flex;
   flex-direction: column;
   gap: 10%;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .form-section h2 {
