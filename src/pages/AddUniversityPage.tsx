@@ -131,9 +131,8 @@ const AddUniversityPage = () => {
 
   const handleSubmitUniversity = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Simulate saving university (no persistent storage in mock)
     if (!formData.universityId) {
-      setFormData((prev) => ({ ...prev, universityId: 1 })); // Mock ID
+      setFormData((prev) => ({ ...prev, universityId: 1 }));
     }
     setActiveTab('specialties');
   };
@@ -196,208 +195,232 @@ const AddUniversityPage = () => {
       {activeTab === 'university' && (
         <form onSubmit={handleSubmitUniversity} className="add-university-form">
           <div className="form-content">
-            <div className="form-group">
-              <label>Название университета (KZ)</label>
-              <input
-                type="text"
-                name="nameKZ"
-                value={formData.nameKZ}
-                onChange={handleInputChange}
-                placeholder="Введите название..."
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Название университета (RU)</label>
-              <input
-                type="text"
-                name="nameRU"
-                value={formData.nameRU}
-                onChange={handleInputChange}
-                placeholder="Введите название..."
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Аббревиатура (KZ)</label>
-              <input
-                type="text"
-                name="abbreviationKZ"
-                value={formData.abbreviationKZ}
-                onChange={handleInputChange}
-                placeholder="Введите аббревиатуру..."
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Аббревиатура (RU)</label>
-              <input
-                type="text"
-                name="abbreviationRU"
-                value={formData.abbreviationRU}
-                onChange={handleInputChange}
-                placeholder="Введите аббревиатуру..."
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Статус</label>
-              <select
-                name="status"
-                value={formData.status}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Выберите статус</option>
-                <option value="государственный">Государственный</option>
-                <option value="автономный">Автономный</option>
-                <option value="частный">Частный</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Адрес</label>
-              <input
-                type="text"
-                name="address"
-                value={formData.address}
-                onChange={handleInputChange}
-                placeholder="Введите адрес..."
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Вебсайт</label>
-              <input
-                type="url"
-                name="website"
-                value={formData.website}
-                onChange={handleInputChange}
-                placeholder="Введите URL..."
-              />
-            </div>
-            <div className="form-group">
-              <label>Телефон</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData.phone}
-                onChange={handleInputChange}
-                placeholder="Введите телефон..."
-              />
-            </div>
-            <div className="form-group">
-              <label>Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Введите email..."
-              />
-            </div>
-            <div className="form-group">
-              <label>WhatsApp</label>
-              <input
-                type="tel"
-                name="whatsapp"
-                value={formData.whatsapp}
-                onChange={handleInputChange}
-                placeholder="Введите номер WhatsApp..."
-              />
-            </div>
-            <div className="form-group">
-              <label>Код университета</label>
-              <input
-                type="text"
-                name="code"
-                value={formData.code}
-                onChange={handleInputChange}
-                placeholder="Введите код..."
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Количество студентов</label>
-              <input
-                type="number"
-                name="student_count"
-                value={formData.student_count || ''}
-                onChange={handleInputChange}
-                placeholder="Введите количество студентов..."
-                min="0"
-              />
-            </div>
-            <div className="form-group">
-              <label>Минимальный балл ЕНТ</label>
-              <input
-                type="number"
-                name="ent_score"
-                value={formData.ent_score || ''}
-                onChange={handleInputChange}
-                placeholder="Введите балл ЕНТ..."
-                min="0"
-              />
-            </div>
-            <div className="form-group">
-              <label>QS рейтинг</label>
-              <input
-                type="text"
-                name="qs_score"
-                value={formData.qs_score}
-                onChange={handleInputChange}
-                placeholder="Введите рейтинг QS (например, 301-350)..."
-              />
-            </div>
-            <div className="form-group">
-              <label>Логотип</label>
-              <input
-                type="file"
-                name="logo"
-                accept="image/*"
-                onChange={(e) => handleFileChange(e, 'logo')}
-              />
-            </div>
-            <div className="form-group">
-              <label>Галерея</label>
-              <input
-                type="file"
-                name="gallery"
-                accept="image/*"
-                multiple
-                onChange={(e) => handleFileChange(e, 'gallery')}
-              />
-            </div>
-            <div className="form-group">
-              <label>Точка на карте</label>
-              <input
-                type="text"
-                name="mapPoint"
-                value={formData.mapPoint}
-                onChange={handleInputChange}
-                placeholder="Введите координаты или адрес..."
-              />
-            </div>
-            <div className="form-group">
-              <label>Описание</label>
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleInputChange}
-                placeholder="Введите описание..."
-                rows={4}
-              />
-            </div>
-            <div className="form-group">
-              <label>Услуги</label>
-              <Select
-                isMulti
-                options={serviceOptions}
-                value={serviceOptions.filter((option) => formData.services.includes(option.value))}
-                onChange={handleServicesChange}
-                placeholder="Выберите услуги..."
-                className="services-select"
-              />
-            </div>
+            <section className="form-section">
+              <h2>Основная информация</h2>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>Название (KZ)</label>
+                  <input
+                    type="text"
+                    name="nameKZ"
+                    value={formData.nameKZ}
+                    onChange={handleInputChange}
+                    placeholder="Введите название на казахском"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Название (RU)</label>
+                  <input
+                    type="text"
+                    name="nameRU"
+                    value={formData.nameRU}
+                    onChange={handleInputChange}
+                    placeholder="Введите название на русском"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Аббревиатура (KZ)</label>
+                  <input
+                    type="text"
+                    name="abbreviationKZ"
+                    value={formData.abbreviationKZ}
+                    onChange={handleInputChange}
+                    placeholder="Введите аббревиатуру на казахском"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Аббревиатура (RU)</label>
+                  <input
+                    type="text"
+                    name="abbreviationRU"
+                    value={formData.abbreviationRU}
+                    onChange={handleInputChange}
+                    placeholder="Введите аббревиатуру на русском"
+                    required
+                  />
+                </div>
+                <div className="form-group full-width">
+                  <label>Статус</label>
+                  <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleInputChange}
+                    required
+                  >
+                    <option value="">Выберите статус</option>
+                    <option value="государственный">Государственный</option>
+                    <option value="автономный">Автономный</option>
+                    <option value="частный">Частный</option>
+                  </select>
+                </div>
+                <div className="form-group full-width">
+                  <label>Адрес</label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    placeholder="Введите адрес университета"
+                    required
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section className="form-section">
+              <h2>Контактная информация</h2>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>Вебсайт</label>
+                  <input
+                    type="url"
+                    name="website"
+                    value={formData.website}
+                    onChange={handleInputChange}
+                    placeholder="Введите URL вебсайта"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Телефон</label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="Введите номер телефона"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="Введите email"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>WhatsApp</label>
+                  <input
+                    type="tel"
+                    name="whatsapp"
+                    value={formData.whatsapp}
+                    onChange={handleInputChange}
+                    placeholder="Введите номер WhatsApp"
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section className="form-section">
+              <h2>Дополнительная информация</h2>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>Код университета</label>
+                  <input
+                    type="text"
+                    name="code"
+                    value={formData.code}
+                    onChange={handleInputChange}
+                    placeholder="Введите код университета"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Количество студентов</label>
+                  <input
+                    type="number"
+                    name="student_count"
+                    value={formData.student_count || ''}
+                    onChange={handleInputChange}
+                    placeholder="Введите количество студентов"
+                    min="0"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Минимальный балл ЕНТ</label>
+                  <input
+                    type="number"
+                    name="ent_score"
+                    value={formData.ent_score || ''}
+                    onChange={handleInputChange}
+                    placeholder="Введите балл ЕНТ"
+                    min="0"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>QS рейтинг</label>
+                  <input
+                    type="text"
+                    name="qs_score"
+                    value={formData.qs_score}
+                    onChange={handleInputChange}
+                    placeholder="Введите рейтинг QS (например, 301-350)"
+                  />
+                </div>
+                <div className="form-group full-width">
+                  <label>Точка на карте</label>
+                  <input
+                    type="text"
+                    name="mapPoint"
+                    value={formData.mapPoint}
+                    onChange={handleInputChange}
+                    placeholder="Введите координаты или адрес"
+                  />
+                </div>
+                <div className="form-group full-width">
+                  <label>Описание</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    placeholder="Введите описание университета"
+                    rows={5}
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section className="form-section">
+              <h2>Медиа и услуги</h2>
+              <div className="form-grid">
+                <div className="form-group">
+                  <label>Логотип</label>
+                  <input
+                    type="file"
+                    name="logo"
+                    accept="image/*"
+                    onChange={(e) => handleFileChange(e, 'logo')}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Галерея</label>
+                  <input
+                    type="file"
+                    name="gallery"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => handleFileChange(e, 'gallery')}
+                  />
+                </div>
+                <div className="form-group full-width">
+                  <label>Услуги</label>
+                  <Select
+                    isMulti
+                    options={serviceOptions}
+                    value={serviceOptions.filter((option) => formData.services.includes(option.value))}
+                    onChange={handleServicesChange}
+                    placeholder="Выберите услуги..."
+                    className="services-select"
+                  />
+                </div>
+              </div>
+            </section>
+
             <div className="form-actions">
               <button type="button" onClick={handleCancel} className="cancel-btn">
                 Отмена
@@ -414,51 +437,54 @@ const AddUniversityPage = () => {
         <div className="specialties-section">
           <form onSubmit={handleAddSpecialty} className="specialty-form">
             <div className="form-content">
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Код специальности</label>
-                  <input
-                    type="text"
-                    name="code"
-                    value={specialtyForm.code}
-                    onChange={handleSpecialtyInputChange}
-                    placeholder="Введите код..."
-                    required
-                  />
+              <section className="form-section">
+                <h2>Добавить специальность</h2>
+                <div className="form-grid">
+                  <div className="form-group">
+                    <label>Код специальности</label>
+                    <input
+                      type="text"
+                      name="code"
+                      value={specialtyForm.code}
+                      onChange={handleSpecialtyInputChange}
+                      placeholder="Введите код специальности"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Название специальности</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={specialtyForm.name}
+                      onChange={handleSpecialtyInputChange}
+                      placeholder="Введите название специальности"
+                      required
+                    />
+                  </div>
+                  <div className="form-group full-width">
+                    <label>Описание</label>
+                    <textarea
+                      name="description"
+                      value={specialtyForm.description}
+                      onChange={handleSpecialtyInputChange}
+                      placeholder="Введите описание специальности"
+                      rows={3}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Минимальный балл ЕНТ</label>
+                    <input
+                      type="number"
+                      name="entScore"
+                      value={specialtyForm.entScore}
+                      onChange={handleSpecialtyInputChange}
+                      placeholder="Введите балл ЕНТ"
+                      min="0"
+                    />
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label>Название специальности</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={specialtyForm.name}
-                    onChange={handleSpecialtyInputChange}
-                    placeholder="Введите название..."
-                    required
-                  />
-                </div>
-              </div>
-              <div className="form-group">
-                <label>Описание</label>
-                <textarea
-                  name="description"
-                  value={specialtyForm.description}
-                  onChange={handleSpecialtyInputChange}
-                  placeholder="Введите описание..."
-                  rows={3}
-                />
-              </div>
-              <div className="form-group">
-                <label>Минимальный балл ЕНТ</label>
-                <input
-                  type="number"
-                  name="entScore"
-                  value={specialtyForm.entScore}
-                  onChange={handleSpecialtyInputChange}
-                  placeholder="Введите балл..."
-                  min="0"
-                />
-              </div>
+              </section>
               <div className="form-actions">
                 <button type="submit" className="add-specialty-btn">
                   Добавить специальность
