@@ -58,6 +58,9 @@
   cursor: pointer;
   transition: background-color 0.2s, color 0.2s;
   font-family: 'Montserrat', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .tab-btn:hover {
@@ -67,7 +70,7 @@
 
 .tab-btn.active {
   border-bottom: 2px solid #007bff;
-  color: #333;
+  color: #007bff;
   background-color: #fff;
 }
 

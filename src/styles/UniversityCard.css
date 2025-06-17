@@ -15,7 +15,24 @@
     flex-direction: row;
     align-items: center;
     flex: 2;
-    gap: 30%;
+    gap: 10%;
+}
+
+.card-right-side {
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    border-left: 2px solid #007bff;
+    align-items: center;
+    gap: 10px;
+}
+
+.card-left-side strong {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    color: #007bff;
+    margin-bottom: 10px;
 }
 
 .university-card:hover {
@@ -71,8 +88,21 @@
 .university-title .abbreviation {
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
-  color: #777;
+  color: #555;
   margin: 5px 0 0 0;
+}
+
+.university-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.university-details p strong {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  color: #007bff;
+  margin: 8px 0;
 }
 
 .university-details p {
@@ -80,5 +110,20 @@
   font-size: 14px;
   color: #555;
   margin: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-uni {
+  height: 70%;
+  padding-bottom: 10px;
+}
+
+.right-icons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
 }
 

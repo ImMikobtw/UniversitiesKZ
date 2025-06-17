@@ -1,7 +1,9 @@
 import React from "react";
-import PencilLine from "../assets/icons/PencilLine.svg?react";
-import Trash from "../assets/icons/Trash.svg?react";
 import "../styles/UniversityCard.css";
+import Test from "../assets/icons/test.svg?react";
+import QS from "../assets/icons/qs.svg?react";
+import Uni from "../assets/icons/uni.svg?react";
+import Pocket from "../assets/icons/pocket.svg?react";
 
 type UniversityCardProps = {
   logo: string;
@@ -27,27 +29,10 @@ const UniversityCard: React.FC<UniversityCardProps> = ({
   status,
   entScore,
   qsScore,
-  onEdit,
-  onDelete,
 }) => {
-  const handleEdit = () => {
-    if (onEdit) onEdit(code);
-  };
-
-  const handleDelete = () => {
-    if (onDelete) onDelete(code);
-  };
 
   return (
     <div className="university-card">
-      <div className="university-actions">
-        <button onClick={handleEdit} className="action-btn edit-btn">
-          <PencilLine />
-        </button>
-        <button onClick={handleDelete} className="action-btn delete-btn">
-          <Trash />
-        </button>
-      </div>
       <div className="card-content">
          <div className="card-left-side">
             <div className="university-header">
@@ -59,13 +44,28 @@ const UniversityCard: React.FC<UniversityCardProps> = ({
             </div>
            <p><strong>Адрес:</strong> {address}</p>
            <p><strong>Код университета:</strong> {code}</p>
+           <p></p>
          </div>
          <div className="card-right-side">
+            <div className="right-icons">
+                <Pocket className="icon" />
+                <Uni className="icon-uni" />
+                <Test className="icon" />
+                <QS className="icon" />
+            </div>
            <div className="university-details">
-               <p><strong>Количество студентов:</strong> {studentCount.toLocaleString()}</p>
-               <p><strong>Статус:</strong> {status}</p>
-               <p><strong>ЕНТ:</strong> {entScore}</p>
-               <p><strong>QS:</strong> {qsScore}</p>
+               <p>
+                <strong>Количество студентов:</strong> {studentCount.toLocaleString()}
+               </p>
+               <p>
+                <strong>Статус:</strong> {status}
+               </p>
+               <p>
+                <strong>ЕНТ:</strong> {entScore}
+               </p>
+               <p>
+                <strong>QS:</strong> {qsScore}
+               </p>
            </div>
          </div>
       </div>

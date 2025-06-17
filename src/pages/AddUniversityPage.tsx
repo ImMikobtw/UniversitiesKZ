@@ -4,6 +4,8 @@ import Select from 'react-select';
 import '../styles/AddUniversityPage.css';
 import BackIcon from '../assets/icons/BackIcon.svg?react';
 import { mockUniversities, mockSpecialties } from '../MockData';
+import Stack from '../assets/icons/Stack.svg?react';
+import Clipboard from '../assets/icons/Clipboard.svg?react';
 
 interface FormData {
   nameKZ: string;
@@ -181,6 +183,7 @@ const AddUniversityPage = () => {
           className={`tab-btn ${activeTab === 'university' ? 'active' : ''}`}
           onClick={() => setActiveTab('university')}
         >
+          <Stack className="uni-icon" />
           {formData.universityId ? 'Редактировать Университет' : 'Добавить Университет'}
         </button>
         <button
@@ -188,6 +191,7 @@ const AddUniversityPage = () => {
           onClick={() => setActiveTab('specialties')}
           disabled={!formData.universityId}
         >
+          <Clipboard className="specialty-icon" />
           Список Специальностей
         </button>
       </div>
