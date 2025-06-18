@@ -26,3 +26,27 @@
   width: 150px;
   cursor: pointer;
 }
+
+.logout-btn {
+  padding: 10px 20px;
+  background-color: #fff;
+  color: #A1AAE1;
+  font-size: 18px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.logout-btn:hover,
+.logout-btn:focus {
+  color: white;
+  background-color: #2374EE;
+  transform: translateY(-2px);
+}
+
+.logout-btn:active {
+  transform: translateY(0);
+}

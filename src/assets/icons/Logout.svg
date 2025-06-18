@@ -1,0 +1,38 @@
+<svg width="682.66669" height="682.66669" xmlns="http://www.w3.org/2000/svg" version="1.1" xml:space="preserve">
+ <defs id="defs2071">
+  <clipPath clipPathUnits="userSpaceOnUse" id="clipPath2081">
+   <path d="m0,512l512,0l0,-512l-512,0l0,512z" id="path2079"/>
+  </clipPath>
+  <clipPath clipPathUnits="userSpaceOnUse" id="clipPath2101">
+   <path d="m0,512l512,0l0,-512l-512,0l0,512z" id="path2099"/>
+  </clipPath>
+ </defs>
+ <g>
+  <title>Layer 1</title>
+  <g id="g2073" transform="matrix(1.3333333,0,0,-1.3333333,0,682.66667)">
+   <g id="g2075">
+    <g id="g2077" clip-path="url(#clipPath2081)">
+     <g id="g2083">
+      <path d="m320,304l0,152l-96,0l0,-152l0,-96l0,-152l96,0l0,152" id="path2085" fill="none" stroke="currentColor" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"/>
+     </g>
+     <g id="g2087">
+      <path d="m224,15l-209,41l0,400l209,41l0,-482z" id="path2089" fill="none" stroke="currentColor" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"/>
+     </g>
+    </g>
+   </g>
+   <g id="g2091">
+    <path d="m160,272l0,-32" id="path2093" fill="none" stroke="#000000" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"/>
+   </g>
+   <g id="g2095">
+    <g id="g2097" clip-path="url(#clipPath2101)">
+     <g id="g2103">
+      <path d="m224,304l176,0l0,48l97,-96l-97,-96l0,48l-176,0l0,96z" id="path2105" fill="none" stroke="#000000" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"/>
+     </g>
+     <g id="g2107">
+      <path d="m80,43.25l0,425.5" id="path2109" fill="none" stroke="#000000" stroke-width="30" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="10"/>
+     </g>
+    </g>
+   </g>
+  </g>
+ </g>
+</svg>
