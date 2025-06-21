@@ -1,6 +1,12 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockUsers, mockToken, mockDecodedToken } from '../MockData';
+import { AxiosError } from 'axios';
+import api from '../api/axios';
+
+// Define the backend's error response structure
+interface BackendError {
+  error?: string;
+}
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -22,51 +28,63 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
-    const refreshToken = localStorage.getItem('refreshToken');
-    if (accessToken && refreshToken) {
-      if (refreshToken === mockToken.refreshToken) {
-        setIsAuthenticated(true);
-        setUniversityCode(mockDecodedToken.universityCode);
-      } else {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        setIsAuthenticated(false);
-        setUniversityId(undefined);
-        setUniversityCode(undefined);
-      }
+    if (accessToken) {
+      // Verify token by fetching profile
+      api.get('/api/profile')
+        .then((response) => {
+          setIsAuthenticated(true);
+          setUniversityId(response.data.university_id);
+          // Fetch university code if needed
+        })
+        .catch(() => {
+          localStorage.removeItem('accessToken');
+          setIsAuthenticated(false);
+          setUniversityId(undefined);
+          setUniversityCode(undefined);
+        });
     }
   }, []);
 
   const login = async (email: string, password: string) => {
-    const user = mockUsers.find((u) => u.email === email && u.password === password);
-    if (!user) {
-      throw new Error('Invalid credentials');
+    try {
+      const response = await api.post('/auth/login', { email, password });
+      const { token, user } = response.data;
+      localStorage.setItem('accessToken', token);
+      setIsAuthenticated(true);
+      setUniversityId(user.university_id);
+      setUniversityCode(user.university_code); // Adjust based on backend response
+      navigate('/main');
+      return true;
+    } catch (error) {
+      const axiosError = error as AxiosError<BackendError>;
+      throw new Error(axiosError.response?.data?.error || 'Login failed');
     }
-    localStorage.setItem('accessToken', mockToken.accessToken);
-    localStorage.setItem('refreshToken', mockToken.refreshToken);
-    setIsAuthenticated(true);
-    setUniversityId(undefined); 
-    setUniversityCode(user.universityCode);
-    navigate('/main');
-    return true;
   };
 
   const register = async (firstName: string, lastName: string, email: string, university: string, password: string) => {
-    if (mockUsers.some((u) => u.email === email)) {
-      throw new Error('Email already exists');
+    try {
+      const response = await api.post('/auth/register', {
+        first_name: firstName,
+        last_name: lastName,
+        email,
+        password,
+        university_id: university, // Map to backend's expected field
+      });
+      const { token, user } = response.data;
+      localStorage.setItem('accessToken', token);
+      setIsAuthenticated(true);
+      setUniversityId(user.university_id);
+      setUniversityCode(user.university_code); // Adjust based on backend response
+      navigate('/main');
+      return true;
+    } catch (error) {
+      const axiosError = error as AxiosError<BackendError>;
+      throw new Error(axiosError.response?.data?.error || 'Registration failed');
     }
-    localStorage.setItem('accessToken', mockToken.accessToken);
-    localStorage.setItem('refreshToken', mockToken.refreshToken);
-    setIsAuthenticated(true);
-    setUniversityId(undefined);
-    setUniversityCode(university); 
-    navigate('/main');
-    return true;
   };
 
   const logout = () => {
     localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
     setIsAuthenticated(false);
     setUniversityId(undefined);
     setUniversityCode(undefined);
@@ -78,7 +96,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, register, logout, getToken, universityId, universityCode }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated,
+        login,
+        register,
+        logout, // Added logout to the value object
+        getToken,
+        universityId,
+        universityCode,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

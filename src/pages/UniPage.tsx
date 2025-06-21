@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UniversityCard from '../components/UniversityCard';
 import '../styles/UniPage.css';
-import { mockUniversities } from '../MockData';
+import api from '../api/axios';
 import { useAuth } from '../context/AuthContext';
 import PencilLine from '../assets/icons/PencilLine.svg?react';
 
@@ -10,21 +10,42 @@ const UniPage = () => {
   const [university, setUniversity] = useState<any>(null);
   const [error, setError] = useState<string>('');
   const [viewMode, setViewMode] = useState<'card' | 'full'>('card');
-  const { universityCode } = useAuth();
+  const { universityId } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!universityCode) {
+    if (!universityId) {
       setError('University information not available.');
       return;
     }
-    const uni = mockUniversities.find((u) => u.code === universityCode);
-    if (uni) {
-      setUniversity(uni);
-    } else {
-      setError('University not found.');
-    }
-  }, [universityCode]);
+    api.get(`/api/universities/${universityId}`)
+      .then((response) => {
+        setUniversity({
+          id: response.data.uni_id,
+          name_kz: response.data.uni_name_kz,
+          name_ru: response.data.uni_name_rus,
+          abbreviation_kz: response.data.uni_short_kz,
+          abbreviation_ru: response.data.uni_short_rus,
+          status: response.data.uni_status,
+          address: response.data.uni_adress,
+          website: response.data.uni_website,
+          phone: response.data.uni_phone_number,
+          email: response.data.uni_email,
+          whatsapp: response.data.uni_whatsapp,
+          code: response.data.uni_code,
+          student_count: response.data.students_number,
+          ent_score: response.data.ent_min,
+          qs_score: response.data.qs_rate,
+          logo_url: response.data.logo_path,
+          map_point: response.data.map_point,
+          description: response.data.uni_description,
+          services: [], 
+        });
+      })
+      .catch(() => {
+        setError('University not found.');
+      });
+  }, [universityId]);
 
   const handleEdit = (code: string) => {
     navigate(`/add-university?code=${code}`);

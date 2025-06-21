@@ -1,33 +1,36 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, NavLink, useLocation } from 'react-router-dom';
-import Select from 'react-select';
+import { AxiosError } from 'axios';
 import '../styles/AddUniversityPage.css';
+import api from '../api/axios';
 import BackIcon from '../assets/icons/BackIcon.svg?react';
-import { mockUniversities, mockSpecialties } from '../MockData';
 import Stack from '../assets/icons/Stack.svg?react';
 import Clipboard from '../assets/icons/Clipboard.svg?react';
 
+interface BackendError {
+  error?: string;
+}
+
 interface FormData {
-  nameKZ: string;
-  nameRU: string;
+  name_kz: string;
+  name_rus: string;
   status: string;
-  address: string;
+  adress: string;
   website: string;
-  phone: string;
+  phone_number: string;
   email: string;
   whatsapp: string;
   code: string;
-  abbreviationKZ: string;
-  abbreviationRU: string;
-  services: string[];
-  logo: File | null;
-  gallery: File[];
-  mapPoint: string;
+  short_kz: string;
+  short_rus: string;
+  logo_path: string;
+  gallery_path: string;
+  map_point: string;
   description: string;
-  universityId?: number;
-  student_count?: number;
-  ent_score?: number;
-  qs_score?: string;
+  uni_id?: number;
+  students_number?: number;
+  ent_min?: number;
+  qs_rate?: string;
 }
 
 interface Specialty {
@@ -37,37 +40,29 @@ interface Specialty {
   entScore: number;
 }
 
-const serviceOptions = [
-  { value: 'общежитие', label: 'Общежитие' },
-  { value: 'бесплатный Wi-Fi', label: 'Бесплатный Wi-Fi' },
-  { value: 'столовая', label: 'Столовая' },
-  { value: 'библиотека', label: 'Библиотека' },
-];
-
 const AddUniversityPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState<'university' | 'specialties'>('university');
   const [formData, setFormData] = useState<FormData>({
-    nameKZ: '',
-    nameRU: '',
+    name_kz: '',
+    name_rus: '',
     status: '',
-    address: '',
+    adress: '',
     website: '',
-    phone: '',
+    phone_number: '',
     email: '',
     whatsapp: '',
     code: '',
-    abbreviationKZ: '',
-    abbreviationRU: '',
-    services: [],
-    logo: null,
-    gallery: [],
-    mapPoint: '',
+    short_kz: '',
+    short_rus: '',
+    logo_path: '',
+    gallery_path: '',
+    map_point: '',
     description: '',
-    student_count: undefined,
-    ent_score: undefined,
-    qs_score: '',
+    students_number: undefined,
+    ent_min: undefined,
+    qs_rate: '',
   });
   const [specialties, setSpecialties] = useState<Specialty[]>([]);
   const [specialtyForm, setSpecialtyForm] = useState<Specialty>({
@@ -76,36 +71,53 @@ const AddUniversityPage = () => {
     description: '',
     entScore: 0,
   });
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const code = queryParams.get('code');
-    if (code) {
-      const uni = mockUniversities.find((u) => u.code === code);
-      if (uni) {
-        setFormData({
-          ...formData,
-          universityId: uni.id,
-          nameKZ: uni.name_kz || '',
-          nameRU: uni.name_ru || '',
-          abbreviationKZ: uni.abbreviation_kz || '',
-          abbreviationRU: uni.abbreviation_ru || '',
-          status: uni.status || '',
-          address: uni.address || '',
-          website: uni.website || '',
-          phone: uni.phone || '',
-          email: uni.email || '',
-          whatsapp: uni.whatsapp || '',
-          code: uni.code || '',
-          services: uni.services || [],
-          mapPoint: uni.map_point || '',
-          description: uni.description || '',
-          student_count: uni.student_count,
-          ent_score: uni.ent_score,
-          qs_score: uni.qs_score || '',
+    const uni_id = queryParams.get('uni_id');
+    if (uni_id) {
+      api.get(`/api/universities/${uni_id}`)
+        .then((response) => {
+          setFormData({
+            uni_id: response.data.uni_id,
+            name_kz: response.data.uni_name_kz || '',
+            name_rus: response.data.uni_name_rus || '',
+            short_kz: response.data.uni_short_kz || '',
+            short_rus: response.data.uni_short_rus || '',
+            status: response.data.uni_status || '',
+            adress: response.data.uni_adress || '',
+            website: response.data.uni_website || '',
+            phone_number: response.data.uni_phone_number || '',
+            email: response.data.uni_email || '',
+            whatsapp: response.data.uni_whatsapp || '',
+            code: response.data.uni_code || '',
+            map_point: response.data.map_point || '',
+            description: response.data.uni_description || '',
+            students_number: response.data.students_number,
+            ent_min: response.data.ent_min,
+            qs_rate: response.data.qs_rate || '',
+            logo_path: response.data.logo_path || '',
+            gallery_path: response.data.gallery_path || '',
+          });
+          // Fetch specialties for this university
+          api.get(`/api/specialities?uni_id=${uni_id}`)
+            .then((specResponse) => {
+              setSpecialties(specResponse.data.map((spec: any) => ({
+                code: spec.spec_code,
+                name: spec.spec_name_rus,
+                description: spec.subjects,
+                entScore: spec.ent_min || 0,
+              })));
+            })
+            .catch(() => {
+              setError('Failed to load specialties');
+            });
+        })
+        .catch((err: unknown) => {
+          const error = err as AxiosError<BackendError>;
+          setError(error.response?.data?.error || 'Failed to load university data');
         });
-        setSpecialties(mockSpecialties.filter((s) => s.universityId === uni.id));
-      }
     }
   }, [location.search]);
 
@@ -113,30 +125,65 @@ const AddUniversityPage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'student_count' || name === 'ent_score' ? (value ? Number(value) : undefined) : value,
+      [name]: name === 'students_number' || name === 'ent_min' ? (value ? Number(value) : undefined) : value,
     }));
   };
 
-  const handleServicesChange = (selectedOptions: any) => {
-    const selectedValues = selectedOptions ? selectedOptions.map((option: any) => option.value) : [];
-    setFormData((prev) => ({ ...prev, services: selectedValues }));
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
-    const files = e.target.files;
-    if (field === 'logo' && files && files[0]) {
-      setFormData((prev) => ({ ...prev, logo: files[0] }));
-    } else if (field === 'gallery' && files) {
-      setFormData((prev) => ({ ...prev, gallery: Array.from(files) }));
+  const validateUniversityForm = () => {
+    if (!formData.name_kz || !formData.name_rus || !formData.short_kz || !formData.short_rus || !formData.status || !formData.adress || !formData.code) {
+      return 'Please fill in all required fields.';
     }
+    if (formData.email && !formData.email.includes('@')) {
+      return 'Please enter a valid email address.';
+    }
+    if (formData.website && !formData.website.match(/^https?:\/\/.+/)) {
+      return 'Please enter a valid website URL.';
+    }
+    return '';
   };
 
   const handleSubmitUniversity = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!formData.universityId) {
-      setFormData((prev) => ({ ...prev, universityId: 1 }));
+    setError('');
+    const validationError = validateUniversityForm();
+    if (validationError) {
+      setError(validationError);
+      return;
     }
-    setActiveTab('specialties');
+
+    try {
+      const data = {
+        uni_id: formData.uni_id,
+        uni_name_kz: formData.name_kz,
+        uni_name_rus: formData.name_rus,
+        uni_short_kz: formData.short_kz,
+        uni_short_rus: formData.short_rus,
+        uni_status: formData.status,
+        uni_adress: formData.adress,
+        uni_website: formData.website,
+        uni_phone_number: formData.phone_number,
+        uni_email: formData.email,
+        uni_whatsapp: formData.whatsapp,
+        uni_code: formData.code,
+        students_number: formData.students_number,
+        ent_min: formData.ent_min,
+        qs_rate: formData.qs_rate,
+        logo_path: formData.logo_path,
+        gallery_path: formData.gallery_path,
+        map_point: formData.map_point,
+        uni_description: formData.description,
+      };
+      if (formData.uni_id) {
+        await api.put(`/api/universities/${formData.uni_id}`, data);
+      } else {
+        const response = await api.post('/api/universities', data);
+        setFormData((prev) => ({ ...prev, uni_id: response.data.uni_id }));
+      }
+      setActiveTab('specialties');
+    } catch (err: unknown) {
+      const error = err as AxiosError<BackendError>;
+      setError(error.response?.data?.error || 'Failed to save university');
+    }
   };
 
   const handleCancel = () => {
@@ -151,21 +198,47 @@ const AddUniversityPage = () => {
     }));
   };
 
+  const validateSpecialtyForm = () => {
+    if (!specialtyForm.code || !specialtyForm.name) {
+      return 'Please fill in code and name for the specialty.';
+    }
+    return '';
+  };
+
   const handleAddSpecialty = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!specialtyForm.code || !specialtyForm.name || !formData.universityId) {
-      alert('Пожалуйста, заполните код, название специальности и сохраните университет');
+    setError('');
+    const validationError = validateSpecialtyForm();
+    if (validationError) {
+      setError(validationError);
       return;
     }
-    const newSpecialty = {
-      universityId: formData.universityId,
-      code: specialtyForm.code,
-      name: specialtyForm.name,
-      description: specialtyForm.description,
-      entScore: specialtyForm.entScore,
-    };
-    setSpecialties((prev) => [...prev, newSpecialty]);
-    setSpecialtyForm({ code: '', name: '', description: '', entScore: 0 });
+    if (!formData.uni_id) {
+      setError('Please save the university first.');
+      return;
+    }
+    try {
+      const newSpecialty = {
+        spec_name_rus: specialtyForm.name,
+        spec_code: specialtyForm.code,
+        subjects: specialtyForm.description,
+        spec_type: 'бакалавриат',
+        scholarship: 0,
+        spec_duration: 4,
+        uni_id: formData.uni_id,
+      };
+      await api.post('/api/specialities', newSpecialty);
+      setSpecialties((prev) => [...prev, {
+        code: specialtyForm.code,
+        name: specialtyForm.name,
+        description: specialtyForm.description,
+        entScore: specialtyForm.entScore,
+      }]);
+      setSpecialtyForm({ code: '', name: '', description: '', entScore: 0 });
+    } catch (err: unknown) {
+      const error = err as AxiosError<BackendError>;
+      setError(error.response?.data?.error || 'Failed to add specialty');
+    }
   };
 
   return (
@@ -175,8 +248,10 @@ const AddUniversityPage = () => {
           <BackIcon className="back-icon" />
           Назад
         </NavLink>
-        <h1>{formData.universityId ? 'Редактирование университета' : 'Добавление университета'}</h1>
+        <h1>{formData.uni_id ? 'Редактирование университета' : 'Добавление университета'}</h1>
       </div>
+
+      {error && <div className="error">{error}</div>}
 
       <div className="tabs">
         <button
@@ -184,12 +259,12 @@ const AddUniversityPage = () => {
           onClick={() => setActiveTab('university')}
         >
           <Stack className="uni-icon" />
-          {formData.universityId ? 'Редактировать Университет' : 'Добавить Университет'}
+          {formData.uni_id ? 'Редактировать Университет' : 'Добавить Университет'}
         </button>
         <button
           className={`tab-btn ${activeTab === 'specialties' ? 'active' : ''}`}
           onClick={() => setActiveTab('specialties')}
-          disabled={!formData.universityId}
+          disabled={!formData.uni_id}
         >
           <Clipboard className="specialty-icon" />
           Список Специальностей
@@ -206,8 +281,8 @@ const AddUniversityPage = () => {
                   <label>Название (KZ)</label>
                   <input
                     type="text"
-                    name="nameKZ"
-                    value={formData.nameKZ}
+                    name="name_kz"
+                    value={formData.name_kz}
                     onChange={handleInputChange}
                     placeholder="Введите название на казахском"
                     required
@@ -217,8 +292,8 @@ const AddUniversityPage = () => {
                   <label>Название (RU)</label>
                   <input
                     type="text"
-                    name="nameRU"
-                    value={formData.nameRU}
+                    name="name_rus"
+                    value={formData.name_rus}
                     onChange={handleInputChange}
                     placeholder="Введите название на русском"
                     required
@@ -228,8 +303,8 @@ const AddUniversityPage = () => {
                   <label>Аббревиатура (KZ)</label>
                   <input
                     type="text"
-                    name="abbreviationKZ"
-                    value={formData.abbreviationKZ}
+                    name="short_kz"
+                    value={formData.short_kz}
                     onChange={handleInputChange}
                     placeholder="Введите аббревиатуру на казахском"
                     required
@@ -239,8 +314,8 @@ const AddUniversityPage = () => {
                   <label>Аббревиатура (RU)</label>
                   <input
                     type="text"
-                    name="abbreviationRU"
-                    value={formData.abbreviationRU}
+                    name="short_rus"
+                    value={formData.short_rus}
                     onChange={handleInputChange}
                     placeholder="Введите аббревиатуру на русском"
                     required
@@ -264,8 +339,8 @@ const AddUniversityPage = () => {
                   <label>Адрес</label>
                   <input
                     type="text"
-                    name="address"
-                    value={formData.address}
+                    name="adress"
+                    value={formData.adress}
                     onChange={handleInputChange}
                     placeholder="Введите адрес университета"
                     required
@@ -291,8 +366,8 @@ const AddUniversityPage = () => {
                   <label>Телефон</label>
                   <input
                     type="tel"
-                    name="phone"
-                    value={formData.phone}
+                    name="phone_number"
+                    value={formData.phone_number}
                     onChange={handleInputChange}
                     placeholder="Введите номер телефона"
                   />
@@ -338,8 +413,8 @@ const AddUniversityPage = () => {
                   <label>Количество студентов</label>
                   <input
                     type="number"
-                    name="student_count"
-                    value={formData.student_count || ''}
+                    name="students_number"
+                    value={formData.students_number || ''}
                     onChange={handleInputChange}
                     placeholder="Введите количество студентов"
                     min="0"
@@ -349,8 +424,8 @@ const AddUniversityPage = () => {
                   <label>Минимальный балл ЕНТ</label>
                   <input
                     type="number"
-                    name="ent_score"
-                    value={formData.ent_score || ''}
+                    name="ent_min"
+                    value={formData.ent_min || ''}
                     onChange={handleInputChange}
                     placeholder="Введите балл ЕНТ"
                     min="0"
@@ -360,8 +435,8 @@ const AddUniversityPage = () => {
                   <label>QS рейтинг</label>
                   <input
                     type="text"
-                    name="qs_score"
-                    value={formData.qs_score}
+                    name="qs_rate"
+                    value={formData.qs_rate}
                     onChange={handleInputChange}
                     placeholder="Введите рейтинг QS (например, 301-350)"
                   />
@@ -370,8 +445,8 @@ const AddUniversityPage = () => {
                   <label>Точка на карте</label>
                   <input
                     type="text"
-                    name="mapPoint"
-                    value={formData.mapPoint}
+                    name="map_point"
+                    value={formData.map_point}
                     onChange={handleInputChange}
                     placeholder="Введите координаты или адрес"
                   />
@@ -390,36 +465,26 @@ const AddUniversityPage = () => {
             </section>
 
             <section className="form-section">
-              <h2>Медиа и услуги</h2>
+              <h2>Медиа</h2>
               <div className="form-grid">
                 <div className="form-group">
-                  <label>Логотип</label>
+                  <label>URL логотипа</label>
                   <input
-                    type="file"
-                    name="logo"
-                    accept="image/*"
-                    onChange={(e) => handleFileChange(e, 'logo')}
+                    type="text"
+                    name="logo_path"
+                    value={formData.logo_path}
+                    onChange={handleInputChange}
+                    placeholder="Введите URL логотипа"
                   />
                 </div>
                 <div className="form-group">
-                  <label>Галерея</label>
+                  <label>URL галереи</label>
                   <input
-                    type="file"
-                    name="gallery"
-                    accept="image/*"
-                    multiple
-                    onChange={(e) => handleFileChange(e, 'gallery')}
-                  />
-                </div>
-                <div className="form-group full-width">
-                  <label>Услуги</label>
-                  <Select
-                    isMulti
-                    options={serviceOptions}
-                    value={serviceOptions.filter((option) => formData.services.includes(option.value))}
-                    onChange={handleServicesChange}
-                    placeholder="Выберите услуги..."
-                    className="services-select"
+                    type="text"
+                    name="gallery_path"
+                    value={formData.gallery_path}
+                    onChange={handleInputChange}
+                    placeholder="Введите URL галереи"
                   />
                 </div>
               </div>
@@ -445,15 +510,15 @@ const AddUniversityPage = () => {
                 <h2>Добавить специальность</h2>
                 <div className="form-grid">
                   <div className="form-group">
-                     <label>Код специальности</label>
-                     <input
+                    <label>Код специальности</label>
+                    <input
                       type="text"
                       name="code"
                       value={specialtyForm.code}
                       onChange={handleSpecialtyInputChange}
                       placeholder="Введите код специальности"
                       required
-                     />
+                    />
                   </div>
                   <div className="form-group">
                     <label>Название специальности</label>
