@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       api.get('/api/profile')
         .then((response) => {
           setIsAuthenticated(true);
-          setUniversityId(response.data.university_id);
+          setUniversityId(response.data.university_id || 1); // По умолчанию
         })
         .catch(() => {
           localStorage.removeItem('accessToken');
@@ -45,11 +45,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (email: string, password: string) => {
     try {
       const response = await api.post('/auth/login', { email, password });
-      const { token, user } = response.data;
+      const { token } = response.data;
       localStorage.setItem('accessToken', token);
       setIsAuthenticated(true);
-      setUniversityId(user.university_id);
-      setUniversityCode(user.university_code); 
       navigate('/main');
       return true;
     } catch (error) {
@@ -64,14 +62,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         first_name: firstName,
         last_name: lastName,
         email,
+        university_id: university,
         password,
-        university_id: university, 
       });
       const { token, user } = response.data;
       localStorage.setItem('accessToken', token);
       setIsAuthenticated(true);
       setUniversityId(user.university_id);
-      setUniversityCode(user.university_code); 
+      setUniversityCode(user.university_code || 'TEST'); // По умолчанию
       navigate('/main');
       return true;
     } catch (error) {
@@ -98,7 +96,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isAuthenticated,
         login,
         register,
-        logout, 
+        logout,
         getToken,
         universityId,
         universityCode,

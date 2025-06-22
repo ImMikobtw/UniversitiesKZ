@@ -8,9 +8,9 @@ const RegisterPage = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [university, setUniversity] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [university] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
@@ -44,7 +44,7 @@ const RegisterPage = () => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Ошибка сервера. Попробуйте позже.";
       setError(
-        errorMessage.includes("Email already exists")
+        errorMessage.includes("user already exists")
           ? "Этот email уже зарегистрирован."
           : errorMessage
       );
@@ -92,43 +92,49 @@ const RegisterPage = () => {
                 onChange={(value) => setEmail(value)}
               />
             </div>
-            <div className="third-fourth">
-              <div className="third-line">
-                <AuthInput
-                  id="password"
-                  label="Пароль"
-                  type="password"
-                  placeholder="Введите пароль"
-                  value={password}
-                  onChange={(value) => setPassword(value)}
-                />
-                <AuthInput
-                  id="confirm-password"
-                  label="Подтверждение пароля"
-                  type="password"
-                  placeholder="Подтвердите пароль"
-                  value={confirmPassword}
-                  onChange={(value) => setConfirmPassword(value)}
-                />
-              </div>
-              <div className="fourth-line">
-                <div className="register-btn-container">
-                  <button
-                    type="submit"
-                    className="register-btn"
-                    disabled={isLoading}
-                  >
-                    {isLoading ? "Загрузка..." : "Зарегистрироваться"}
-                  </button>
-                </div>
-                <div className="login-link">
-                  <span className="login-text">Уже есть аккаунт? </span>
-                  <Link to="/login" className="login-link-text">
-                    Войти
-                  </Link>
-                </div>
-              </div>
+            <div className="third-line">
+              <AuthInput
+                id="university"
+                label="ID Университета"
+                type="text"
+                placeholder="Введите ID университета"
+                value={university}
+                onChange={(value) => setUniversity(value)}
+              />
             </div>
+            <div className="fourth-line">
+              <AuthInput
+                id="password"
+                label="Пароль"
+                type="password"
+                placeholder="Введите пароль"
+                value={password}
+                onChange={(value) => setPassword(value)}
+              />
+              <AuthInput
+                id="confirm-password"
+                label="Подтверждение пароля"
+                type="password"
+                placeholder="Подтвердите пароль"
+                value={confirmPassword}
+                onChange={(value) => setConfirmPassword(value)}
+              />
+            </div>
+          </div>
+          <div className="register-btn-container">
+            <button
+              type="submit"
+              className="register-btn"
+              disabled={isLoading}
+            >
+              {isLoading ? "Загрузка..." : "Зарегистрироваться"}
+            </button>
+          </div>
+          <div className="login-link">
+            <span className="login-text">Уже есть аккаунт? </span>
+            <Link to="/login" className="login-link-text">
+              Войти
+            </Link>
           </div>
         </form>
       </div>

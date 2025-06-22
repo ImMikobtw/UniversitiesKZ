@@ -24,7 +24,7 @@ const LoginPage = () => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Ошибка сервера. Попробуйте позже.";
       setError(
-        errorMessage.includes("Invalid credentials")
+        errorMessage.includes("invalid password") || errorMessage.includes("user not found")
           ? "Неверный email или пароль."
           : errorMessage
       );
@@ -77,7 +77,7 @@ const LoginPage = () => {
       </div>
       <div className="registration-link">
         <span className="registration-text">Нет аккаунта? </span>
-        <Link to="/register" className="registration-link-text">
+        <Link to="/register" className="login-link-text">
           Зарегистрироваться
         </Link>
       </div>
