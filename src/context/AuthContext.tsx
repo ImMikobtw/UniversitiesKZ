@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       api.get('/api/profile')
         .then((response) => {
           setIsAuthenticated(true);
-          setUniversityId(response.data.university_id || 1); // По умолчанию
+          setUniversityId(response.data.university_id || 1);
         })
         .catch(() => {
           localStorage.removeItem('accessToken');
@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post('/auth/login', { user_email: email, user_password: password }); // Обновлено
       const { token } = response.data;
       localStorage.setItem('accessToken', token);
       setIsAuthenticated(true);
@@ -58,23 +58,28 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const register = async (firstName: string, lastName: string, email: string, university: string, password: string) => {
     try {
+      const universityId = parseInt(university, 10);
+      if (isNaN(universityId)) {
+        throw new Error("ID университета должен быть числом.");
+      }
+
       const response = await api.post('/auth/register', {
         first_name: firstName,
         last_name: lastName,
-        email,
-        university_id: university,
+        user_email: email, // Обновлено с "email" на "user_email"
+        university_id: universityId,
         password,
       });
       const { token, user } = response.data;
       localStorage.setItem('accessToken', token);
       setIsAuthenticated(true);
       setUniversityId(user.university_id);
-      setUniversityCode(user.university_code || 'TEST'); // По умолчанию
+      setUniversityCode(user.university_code || 'TEST');
       navigate('/main');
       return true;
     } catch (error) {
       const axiosError = error as AxiosError<BackendError>;
-      throw new Error(axiosError.response?.data?.error || 'Registration failed');
+      throw new Error(axiosError.response?.data?.error || (error instanceof Error ? error.message : 'Registration failed'));
     }
   };
 

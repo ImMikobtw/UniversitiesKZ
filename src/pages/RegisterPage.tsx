@@ -36,8 +36,15 @@ const RegisterPage = () => {
       return;
     }
 
+    const universityId = parseInt(university, 10);
+    if (isNaN(universityId)) {
+      setError("ID университета должен быть числом.");
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const success = await register(firstName, lastName, email, university, password);
+      const success = await register(firstName, lastName, email, universityId.toString(), password);
       if (!success) {
         setError("Ошибка регистрации. Пожалуйста, попробуйте еще раз.");
       }
@@ -84,7 +91,7 @@ const RegisterPage = () => {
             </div>
             <div className="second-line">
               <AuthInput
-                id="corporate-email"
+                id="user-email"
                 label="Корпоративная почта"
                 type="email"
                 placeholder="Введите вашу корпоративную почту"
