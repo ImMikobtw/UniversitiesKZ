@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
 import api from '../api/axios';
 
-// Define the backend's error response structure
 interface BackendError {
   error?: string;
 }
@@ -29,12 +28,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
     if (accessToken) {
-      // Verify token by fetching profile
       api.get('/api/profile')
         .then((response) => {
           setIsAuthenticated(true);
           setUniversityId(response.data.university_id);
-          // Fetch university code if needed
         })
         .catch(() => {
           localStorage.removeItem('accessToken');
@@ -52,7 +49,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem('accessToken', token);
       setIsAuthenticated(true);
       setUniversityId(user.university_id);
-      setUniversityCode(user.university_code); // Adjust based on backend response
+      setUniversityCode(user.university_code); 
       navigate('/main');
       return true;
     } catch (error) {
@@ -68,13 +65,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         last_name: lastName,
         email,
         password,
-        university_id: university, // Map to backend's expected field
+        university_id: university, 
       });
       const { token, user } = response.data;
       localStorage.setItem('accessToken', token);
       setIsAuthenticated(true);
       setUniversityId(user.university_id);
-      setUniversityCode(user.university_code); // Adjust based on backend response
+      setUniversityCode(user.university_code); 
       navigate('/main');
       return true;
     } catch (error) {
@@ -101,7 +98,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isAuthenticated,
         login,
         register,
-        logout, // Added logout to the value object
+        logout, 
         getToken,
         universityId,
         universityCode,

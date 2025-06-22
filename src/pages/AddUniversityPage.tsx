@@ -30,7 +30,7 @@ interface FormData {
   uni_id?: number;
   students_number?: number;
   ent_min?: number;
-  qs_rate?: string;
+  qs_rate?: string; 
 }
 
 interface Specialty {
@@ -100,7 +100,7 @@ const AddUniversityPage = () => {
             logo_path: response.data.logo_path || '',
             gallery_path: response.data.gallery_path || '',
           });
-          // Fetch specialties for this university
+          // фетч специальностей
           api.get(`/api/specialities?uni_id=${uni_id}`)
             .then((specResponse) => {
               setSpecialties(specResponse.data.map((spec: any) => ({

@@ -10,11 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "axios": "^1.9.0",
+    "axios": "^1.10.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.6.0",
-    "react-select": "^5.10.1"
+    "react-router-dom": "^7.6.2",
+    "react-select": "^5.10.1",
+    "svgr": "^1.10.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
