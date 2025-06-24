@@ -14,7 +14,6 @@ interface AuthContextType {
   logout: () => void;
   getToken: () => string | null;
   universityId?: number;
-  universityCode?: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,7 +21,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [universityId, setUniversityId] = useState<number | undefined>(undefined);
-  const [universityCode, setUniversityCode] = useState<string | undefined>(undefined);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,22 +35,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           localStorage.removeItem('accessToken');
           setIsAuthenticated(false);
           setUniversityId(undefined);
-          setUniversityCode(undefined);
         });
     }
   }, []);
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await api.post('/auth/login', { user_email: email, user_password: password }); // Обновлено
+      console.log("Sending login request with:", { email, password });
+      const response = await api.post('/auth/login', { email, password });
       const { token } = response.data;
+      console.log("Login successful, received token:", token);
       localStorage.setItem('accessToken', token);
       setIsAuthenticated(true);
       navigate('/main');
       return true;
     } catch (error) {
       const axiosError = error as AxiosError<BackendError>;
-      throw new Error(axiosError.response?.data?.error || 'Login failed');
+      const errorMessage = axiosError.response?.data?.error || 'Login failed';
+      console.error("Login failed:", errorMessage);
+      throw new Error(errorMessage);
     }
   };
 
@@ -66,15 +67,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await api.post('/auth/register', {
         first_name: firstName,
         last_name: lastName,
-        user_email: email, // Обновлено с "email" на "user_email"
+        user_email: email,
         university_id: universityId,
-        password,
+        user_password: password,
       });
       const { token, user } = response.data;
       localStorage.setItem('accessToken', token);
       setIsAuthenticated(true);
       setUniversityId(user.university_id);
-      setUniversityCode(user.university_code || 'TEST');
       navigate('/main');
       return true;
     } catch (error) {
@@ -87,7 +87,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem('accessToken');
     setIsAuthenticated(false);
     setUniversityId(undefined);
-    setUniversityCode(undefined);
     navigate('/login');
   };
 
@@ -104,7 +103,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         logout,
         getToken,
         universityId,
-        universityCode,
       }}
     >
       {children}

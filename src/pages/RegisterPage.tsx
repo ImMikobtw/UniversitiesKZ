@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AuthInput from "../components/input-components/AuthInput";
 import "../styles/RegisterPage.css";
@@ -14,6 +14,7 @@ const RegisterPage = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { register } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +31,8 @@ const RegisterPage = () => {
       setIsLoading(false);
       return;
     }
-    if (!email.includes("@")) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
       setError("Введите корректный адрес электронной почты.");
       setIsLoading(false);
       return;
@@ -45,7 +47,9 @@ const RegisterPage = () => {
 
     try {
       const success = await register(firstName, lastName, email, universityId.toString(), password);
-      if (!success) {
+      if (success) {
+        navigate('/main');
+      } else {
         setError("Ошибка регистрации. Пожалуйста, попробуйте еще раз.");
       }
     } catch (error) {

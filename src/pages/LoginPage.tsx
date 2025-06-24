@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AuthInput from "../components/input-components/AuthInput";
 import "../styles/LoginPage.css";
@@ -10,26 +10,29 @@ const LoginPage = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Form submitted, preventing default");
     setError("");
     setIsLoading(true);
 
     try {
+      console.log("Attempting login with:", { email, password });
       const success = await login(email, password);
-      if (!success) {
-        setError("Неверный email или пароль.");
+      if (success) {
+        navigate('/main');
+      } else {
+        setError("Ошибка входа. Проверьте email или пароль.");
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Ошибка сервера. Попробуйте позже.";
-      setError(
-        errorMessage.includes("invalid password") || errorMessage.includes("user not found")
-          ? "Неверный email или пароль."
-          : errorMessage
-      );
+      setError(errorMessage);
+      console.error("Login error:", errorMessage);
     } finally {
       setIsLoading(false);
+      console.log("Login attempt finished");
     }
   };
 
