@@ -9,8 +9,8 @@ interface BackendError {
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (firstName: string, lastName: string, email: string, university: string, password: string) => Promise<boolean>;
+  login: (Email: string, Password: string) => Promise<boolean>;
+  register: (firstName: string, lastName: string, Email: string, university: string, Password: string) => Promise<boolean>;
   logout: () => void;
   getToken: () => string | null;
   universityId?: number;
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       api.get('/api/profile')
         .then((response) => {
           setIsAuthenticated(true);
-          setUniversityId(response.data.university_id || 1);
+          setUniversityId(response.data.uni_id || 1);
         })
         .catch(() => {
           localStorage.removeItem('accessToken');
@@ -39,10 +39,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (Email: string, Password: string) => {
     try {
-      console.log("Sending login request with:", { email, password });
-      const response = await api.post('/auth/login', { email, password });
+      console.log("Sending login request with:", { Email, Password });
+      const response = await api.post('/auth/login', { Email, Password });
       const { token } = response.data;
       console.log("Login successful, received token:", token);
       localStorage.setItem('accessToken', token);
@@ -67,9 +67,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await api.post('/auth/register', {
         first_name: firstName,
         last_name: lastName,
-        user_email: email,
+        Email: email,
         university_id: universityId,
-        user_password: password,
+        Password: password,
       });
       const { token, user } = response.data;
       localStorage.setItem('accessToken', token);
