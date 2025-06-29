@@ -67,9 +67,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await api.post('/auth/register', {
         first_name: firstName,
         last_name: lastName,
-        user_email: email,
+        Email: email,
         university_id: universityId,
-        user_password: password,
+        Password: password,
       });
       const { token, user } = response.data;
       localStorage.setItem('accessToken', token);

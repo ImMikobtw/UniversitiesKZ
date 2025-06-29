@@ -21,7 +21,7 @@ const UniPage = () => {
     api.get(`/api/universities/${universityId}`)
       .then((response) => {
         setUniversity({
-          id: response.data.uni_id,
+          university_id: response.data.university_id,
           name_kz: response.data.uni_name_kz,
           name_ru: response.data.uni_name_rus,
           abbreviation_kz: response.data.uni_short_kz,
