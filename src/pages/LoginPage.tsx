@@ -5,8 +5,8 @@ import AuthInput from "../components/input-components/AuthInput";
 import "../styles/LoginPage.css";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [User_email, setEmail] = useState("");
+  const [User_password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
@@ -19,8 +19,8 @@ const LoginPage = () => {
     setIsLoading(true);
 
     try {
-      console.log("Attempting login with:", { email, password });
-      const success = await login(email, password);
+      console.log("Attempting login with:", { User_email, User_password });
+      const success = await login(User_email, User_password);
       if (success) {
         navigate('/main');
       } else {
@@ -49,7 +49,7 @@ const LoginPage = () => {
             label="Корпоративная почта"
             type="email"
             placeholder="Введите вашу корпоративную почту"
-            value={email}
+            value={User_email}
             onChange={(value) => setEmail(value)}
           />
           <AuthInput
@@ -57,7 +57,7 @@ const LoginPage = () => {
             label="Пароль"
             type="password"
             placeholder="Введите пароль"
-            value={password}
+            value={User_password}
             onChange={(value) => setPassword(value)}
           />
         </div>
