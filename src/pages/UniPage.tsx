@@ -14,14 +14,10 @@ const UniPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!universityId) {
-      setError('University information not available.');
-      return;
-    }
     api.get(`/api/universities/${universityId}`)
       .then((response) => {
         setUniversity({
-          university_id: response.data.university_id,
+          universityId: response.data.university_id,
           name_kz: response.data.uni_name_kz,
           name_ru: response.data.uni_name_rus,
           abbreviation_kz: response.data.uni_short_kz,
@@ -45,6 +41,11 @@ const UniPage = () => {
       .catch(() => {
         setError('University not found.');
       });
+
+      if (!universityId) {
+      setError('University information not available.');
+      return;
+    }
   }, [universityId]);
 
   const handleEdit = (code: string) => {
