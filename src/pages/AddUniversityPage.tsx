@@ -12,32 +12,43 @@ interface BackendError {
 }
 
 interface FormData {
-  name_kz: string;
-  name_rus: string;
-  status: string;
-  adress: string;
-  website: string;
-  phone_number: string;
-  email: string;
-  whatsapp: string;
-  code: string;
-  short_kz: string;
-  short_rus: string;
+  university_id?: number;
+  uni_name_kz: string;
+  uni_name_rus: string;
+  uni_short_kz: string;
+  uni_short_rus: string;
+  uni_status: number; // Changed to number to match backend
+  uni_address: string; // Fixed spelling from 'adress'
+  uni_website: string;
+  uni_phone_number: string;
+  uni_email: string;
+  uni_whatsapp: string;
+  uni_code: string;
+  uni_description: string;
+  uni_description_kz: string; // Added missing field
+  students_number?: number;
+  ent_min?: number;
+  qs_rate?: number; // Changed to number
   logo_path: string;
   gallery_path: string;
   map_point: string;
-  description: string;
-  uni_id?: number;
-  students_number?: number;
-  ent_min?: number;
-  qs_rate?: string; 
+  cookies?: number; // Added missing field
+  status_id: number; // Added required foreign key
 }
 
 interface Specialty {
-  code: string;
-  name: string;
-  description: string;
-  entScore: number;
+  spec_id?: number;
+  spec_name_kz: string;
+  spec_name_rus: string;
+  spec_name_eng: string;
+  subjects: string;
+  spec_code: string;
+  spec_type: string;
+  scholarship: number;
+  spec_duration: number;
+  ent_min: number;
+  type_id: number; // Added required foreign key
+  university_id: number; // Fixed field name
 }
 
 const AddUniversityPage = () => {
@@ -45,74 +56,86 @@ const AddUniversityPage = () => {
   const location = useLocation();
   const [activeTab, setActiveTab] = useState<'university' | 'specialties'>('university');
   const [formData, setFormData] = useState<FormData>({
-    name_kz: '',
-    name_rus: '',
-    status: '',
-    adress: '',
-    website: '',
-    phone_number: '',
-    email: '',
-    whatsapp: '',
-    code: '',
-    short_kz: '',
-    short_rus: '',
+    uni_name_kz: '',
+    uni_name_rus: '',
+    uni_short_kz: '',
+    uni_short_rus: '',
+    uni_status: 1, // Default status
+    uni_address: '',
+    uni_website: '',
+    uni_phone_number: '',
+    uni_email: '',
+    uni_whatsapp: '',
+    uni_code: '',
+    uni_description: '',
+    uni_description_kz: '',
+    ent_min: 0,
     logo_path: '',
     gallery_path: '',
     map_point: '',
-    description: '',
     students_number: undefined,
-    ent_min: undefined,
-    qs_rate: '',
+    qs_rate: undefined,
+    cookies: 0,
+    status_id: 1, // Default status_id
   });
+  
   const [specialties, setSpecialties] = useState<Specialty[]>([]);
   const [specialtyForm, setSpecialtyForm] = useState<Specialty>({
-    code: '',
-    name: '',
-    description: '',
-    entScore: 0,
+    spec_name_kz: '',
+    spec_name_rus: '',
+    spec_name_eng: '',
+    subjects: '',
+    spec_code: '',
+    spec_type: 'бакалавриат',
+    scholarship: 0,
+    spec_duration: 4,
+    ent_min: 0,
+    type_id: 1, // Default type_id
+    university_id: 0,
   });
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
-    const uni_id = queryParams.get('uni_id');
-    if (uni_id) {
-      api.get(`/api/universities/${uni_id}`)
+    const university_id = queryParams.get('university_id');
+    if (university_id) {
+      // Use the correct public endpoint
+      api.get(`/api/public/universities/${university_id}`)
         .then((response) => {
+          const uni = response.data;
           setFormData({
-            uni_id: response.data.uni_id,
-            name_kz: response.data.uni_name_kz || '',
-            name_rus: response.data.uni_name_rus || '',
-            short_kz: response.data.uni_short_kz || '',
-            short_rus: response.data.uni_short_rus || '',
-            status: response.data.uni_status || '',
-            adress: response.data.uni_adress || '',
-            website: response.data.uni_website || '',
-            phone_number: response.data.uni_phone_number || '',
-            email: response.data.uni_email || '',
-            whatsapp: response.data.uni_whatsapp || '',
-            code: response.data.uni_code || '',
-            map_point: response.data.map_point || '',
-            description: response.data.uni_description || '',
-            students_number: response.data.students_number,
-            ent_min: response.data.ent_min,
-            qs_rate: response.data.qs_rate || '',
-            logo_path: response.data.logo_path || '',
-            gallery_path: response.data.gallery_path || '',
+            university_id: uni.university_id,
+            uni_name_kz: uni.uni_name_kz || '',
+            uni_name_rus: uni.uni_name_rus || '',
+            uni_short_kz: uni.uni_short_kz || '',
+            uni_short_rus: uni.uni_short_rus || '',
+            uni_status: uni.uni_status || 1,
+            uni_address: uni.uni_address || '',
+            uni_website: uni.uni_website || '',
+            uni_phone_number: uni.uni_phone_number || '',
+            uni_email: uni.uni_email || '',
+            uni_whatsapp: uni.uni_whatsapp || '',
+            uni_code: uni.uni_code || '',
+            uni_description: uni.uni_description || '',
+            uni_description_kz: uni.uni_description_kz || '',
+            students_number: uni.students_number,
+            qs_rate: uni.qs_rate,
+            logo_path: uni.logo_path || '',
+            gallery_path: uni.gallery_path || '',
+            map_point: uni.map_point || '',
+            cookies: uni.cookies || 0,
+            status_id: uni.status_id || 1,
           });
-          // фетч специальностей
-          api.get(`/api/specialities?uni_id=${uni_id}`)
+          
+          /*
+          api.get(`/api/specialties?university_id=${university_id}`)
             .then((specResponse) => {
-              setSpecialties(specResponse.data.map((spec: any) => ({
-                code: spec.spec_code,
-                name: spec.spec_name_rus,
-                description: spec.subjects,
-                entScore: spec.ent_min || 0,
-              })));
+              setSpecialties(specResponse.data);
             })
             .catch(() => {
               setError('Failed to load specialties');
             });
+          */
         })
         .catch((err: unknown) => {
           const error = err as AxiosError<BackendError>;
@@ -125,18 +148,22 @@ const AddUniversityPage = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'students_number' || name === 'ent_min' ? (value ? Number(value) : undefined) : value,
+      [name]: (name === 'students_number' || name === 'qs_rate' || name === 'uni_status' || name === 'status_id' || name === 'cookies') 
+        ? (value ? Number(value) : undefined) 
+        : value,
     }));
   };
 
   const validateUniversityForm = () => {
-    if (!formData.name_kz || !formData.name_rus || !formData.short_kz || !formData.short_rus || !formData.status || !formData.adress || !formData.code) {
+    if (!formData.uni_name_kz || !formData.uni_name_rus || !formData.uni_short_kz || 
+        !formData.uni_short_rus || !formData.uni_address || !formData.uni_code || 
+        !formData.uni_phone_number || !formData.uni_email) {
       return 'Please fill in all required fields.';
     }
-    if (formData.email && !formData.email.includes('@')) {
+    if (formData.uni_email && !formData.uni_email.includes('@')) {
       return 'Please enter a valid email address.';
     }
-    if (formData.website && !formData.website.match(/^https?:\/\/.+/)) {
+    if (formData.uni_website && !formData.uni_website.match(/^https?:\/\/.+/)) {
       return 'Please enter a valid website URL.';
     }
     return '';
@@ -152,32 +179,37 @@ const AddUniversityPage = () => {
     }
 
     try {
+      // Create data object that matches backend University model exactly
       const data = {
-        uni_id: formData.uni_id,
-        uni_name_kz: formData.name_kz,
-        uni_name_rus: formData.name_rus,
-        uni_short_kz: formData.short_kz,
-        uni_short_rus: formData.short_rus,
-        uni_status: formData.status,
-        uni_adress: formData.adress,
-        uni_website: formData.website,
-        uni_phone_number: formData.phone_number,
-        uni_email: formData.email,
-        uni_whatsapp: formData.whatsapp,
-        uni_code: formData.code,
+        university_id: formData.university_id,
+        uni_name_kz: formData.uni_name_kz,
+        uni_name_rus: formData.uni_name_rus,
+        uni_short_kz: formData.uni_short_kz,
+        uni_short_rus: formData.uni_short_rus,
+        uni_status: formData.uni_status,
+        uni_address: formData.uni_address,
+        uni_website: formData.uni_website,
+        uni_phone_number: formData.uni_phone_number,
+        uni_email: formData.uni_email,
+        uni_whatsapp: formData.uni_whatsapp,
+        uni_code: formData.uni_code,
+        uni_description: formData.uni_description,
+        uni_description_kz: formData.uni_description_kz,
         students_number: formData.students_number,
-        ent_min: formData.ent_min,
         qs_rate: formData.qs_rate,
         logo_path: formData.logo_path,
         gallery_path: formData.gallery_path,
         map_point: formData.map_point,
-        uni_description: formData.description,
+        cookies: formData.cookies,
+        status_id: formData.status_id,
       };
-      if (formData.uni_id) {
-        await api.put(`/api/universities/${formData.uni_id}`, data);
+
+      if (formData.university_id) {
+        // Note: You'll need to add PUT endpoint for updating universities
+        await api.put(`/api/universities/${formData.university_id}`, data);
       } else {
         const response = await api.post('/api/universities', data);
-        setFormData((prev) => ({ ...prev, uni_id: response.data.uni_id }));
+        setFormData((prev) => ({ ...prev, university_id: response.data.university_id }));
       }
       setActiveTab('specialties');
     } catch (err: unknown) {
@@ -190,17 +222,19 @@ const AddUniversityPage = () => {
     navigate('/main/uni');
   };
 
-  const handleSpecialtyInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleSpecialtyInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setSpecialtyForm((prev) => ({
       ...prev,
-      [name]: name === 'entScore' ? Number(value) : value,
+      [name]: (name === 'ent_min' || name === 'scholarship' || name === 'spec_duration' || name === 'type_id' || name === 'university_id') 
+        ? Number(value) 
+        : value,
     }));
   };
 
   const validateSpecialtyForm = () => {
-    if (!specialtyForm.code || !specialtyForm.name) {
-      return 'Please fill in code and name for the specialty.';
+    if (!specialtyForm.spec_code || !specialtyForm.spec_name_rus || !specialtyForm.spec_name_kz) {
+      return 'Please fill in code and names for the specialty.';
     }
     return '';
   };
@@ -213,28 +247,44 @@ const AddUniversityPage = () => {
       setError(validationError);
       return;
     }
-    if (!formData.uni_id) {
+    if (!formData.university_id) {
       setError('Please save the university first.');
       return;
     }
+
     try {
       const newSpecialty = {
-        spec_name_rus: specialtyForm.name,
-        spec_code: specialtyForm.code,
-        subjects: specialtyForm.description,
+        spec_name_kz: specialtyForm.spec_name_kz,
+        spec_name_rus: specialtyForm.spec_name_rus,
+        spec_name_eng: specialtyForm.spec_name_eng,
+        subjects: specialtyForm.subjects,
+        spec_code: specialtyForm.spec_code,
+        spec_type: specialtyForm.spec_type,
+        scholarship: specialtyForm.scholarship,
+        spec_duration: specialtyForm.spec_duration,
+        ent_min: specialtyForm.ent_min,
+        type_id: specialtyForm.type_id,
+        university_id: formData.university_id, // Fixed field name
+      };
+
+      await api.post('/api/specialities', newSpecialty);
+      setSpecialties((prev) => [...prev, {
+        ...newSpecialty,
+        university_id: formData.university_id!,
+      }]);
+      setSpecialtyForm({
+        spec_name_kz: '',
+        spec_name_rus: '',
+        spec_name_eng: '',
+        subjects: '',
+        spec_code: '',
         spec_type: 'бакалавриат',
         scholarship: 0,
         spec_duration: 4,
-        uni_id: formData.uni_id,
-      };
-      await api.post('/api/specialities', newSpecialty);
-      setSpecialties((prev) => [...prev, {
-        code: specialtyForm.code,
-        name: specialtyForm.name,
-        description: specialtyForm.description,
-        entScore: specialtyForm.entScore,
-      }]);
-      setSpecialtyForm({ code: '', name: '', description: '', entScore: 0 });
+        ent_min: 0,
+        type_id: 1,
+        university_id: formData.university_id!,
+      });
     } catch (err: unknown) {
       const error = err as AxiosError<BackendError>;
       setError(error.response?.data?.error || 'Failed to add specialty');
@@ -248,7 +298,7 @@ const AddUniversityPage = () => {
           <BackIcon className="back-icon" />
           Назад
         </NavLink>
-        <h1>{formData.uni_id ? 'Редактирование университета' : 'Добавление университета'}</h1>
+        <h1>{formData.university_id ? 'Редактирование университета' : 'Добавление университета'}</h1>
       </div>
 
       {error && <div className="error">{error}</div>}
@@ -259,12 +309,12 @@ const AddUniversityPage = () => {
           onClick={() => setActiveTab('university')}
         >
           <Stack className="uni-icon" />
-          {formData.uni_id ? 'Редактировать Университет' : 'Добавить Университет'}
+          {formData.university_id ? 'Редактировать Университет' : 'Добавить Университет'}
         </button>
         <button
           className={`tab-btn ${activeTab === 'specialties' ? 'active' : ''}`}
           onClick={() => setActiveTab('specialties')}
-          disabled={!formData.uni_id}
+          disabled={!formData.university_id}
         >
           <Clipboard className="specialty-icon" />
           Список Специальностей
@@ -282,7 +332,7 @@ const AddUniversityPage = () => {
                   <input
                     type="text"
                     name="name_kz"
-                    value={formData.name_kz}
+                    value={formData.uni_name_kz}
                     onChange={handleInputChange}
                     placeholder="Введите название на казахском"
                     required
@@ -293,7 +343,7 @@ const AddUniversityPage = () => {
                   <input
                     type="text"
                     name="name_rus"
-                    value={formData.name_rus}
+                    value={formData.uni_name_rus}
                     onChange={handleInputChange}
                     placeholder="Введите название на русском"
                     required
@@ -304,7 +354,7 @@ const AddUniversityPage = () => {
                   <input
                     type="text"
                     name="short_kz"
-                    value={formData.short_kz}
+                    value={formData.uni_short_kz}
                     onChange={handleInputChange}
                     placeholder="Введите аббревиатуру на казахском"
                     required
@@ -315,7 +365,7 @@ const AddUniversityPage = () => {
                   <input
                     type="text"
                     name="short_rus"
-                    value={formData.short_rus}
+                    value={formData.uni_short_rus}
                     onChange={handleInputChange}
                     placeholder="Введите аббревиатуру на русском"
                     required
@@ -325,7 +375,7 @@ const AddUniversityPage = () => {
                   <label>Статус</label>
                   <select
                     name="status"
-                    value={formData.status}
+                    value={formData.uni_status}
                     onChange={handleInputChange}
                     required
                   >
@@ -340,7 +390,7 @@ const AddUniversityPage = () => {
                   <input
                     type="text"
                     name="adress"
-                    value={formData.adress}
+                    value={formData.uni_address}
                     onChange={handleInputChange}
                     placeholder="Введите адрес университета"
                     required
@@ -357,7 +407,7 @@ const AddUniversityPage = () => {
                   <input
                     type="url"
                     name="website"
-                    value={formData.website}
+                    value={formData.uni_website}
                     onChange={handleInputChange}
                     placeholder="Введите URL вебсайта"
                   />
@@ -367,7 +417,7 @@ const AddUniversityPage = () => {
                   <input
                     type="tel"
                     name="phone_number"
-                    value={formData.phone_number}
+                    value={formData.uni_phone_number}
                     onChange={handleInputChange}
                     placeholder="Введите номер телефона"
                   />
@@ -377,7 +427,7 @@ const AddUniversityPage = () => {
                   <input
                     type="email"
                     name="email"
-                    value={formData.email}
+                    value={formData.uni_email}
                     onChange={handleInputChange}
                     placeholder="Введите email"
                   />
@@ -387,7 +437,7 @@ const AddUniversityPage = () => {
                   <input
                     type="tel"
                     name="whatsapp"
-                    value={formData.whatsapp}
+                    value={formData.uni_whatsapp}
                     onChange={handleInputChange}
                     placeholder="Введите номер WhatsApp"
                   />
@@ -403,7 +453,7 @@ const AddUniversityPage = () => {
                   <input
                     type="text"
                     name="code"
-                    value={formData.code}
+                    value={formData.uni_code}
                     onChange={handleInputChange}
                     placeholder="Введите код университета"
                     required
@@ -455,7 +505,7 @@ const AddUniversityPage = () => {
                   <label>Описание</label>
                   <textarea
                     name="description"
-                    value={formData.description}
+                    value={formData.uni_description}
                     onChange={handleInputChange}
                     placeholder="Введите описание университета"
                     rows={5}
@@ -514,7 +564,7 @@ const AddUniversityPage = () => {
                     <input
                       type="text"
                       name="code"
-                      value={specialtyForm.code}
+                      value={specialtyForm.spec_code}
                       onChange={handleSpecialtyInputChange}
                       placeholder="Введите код специальности"
                       required
@@ -525,20 +575,10 @@ const AddUniversityPage = () => {
                     <input
                       type="text"
                       name="name"
-                      value={specialtyForm.name}
+                      value={specialtyForm.spec_name_eng}
                       onChange={handleSpecialtyInputChange}
                       placeholder="Введите название специальности"
                       required
-                    />
-                  </div>
-                  <div className="form-group full-width">
-                    <label>Описание</label>
-                    <textarea
-                      name="description"
-                      value={specialtyForm.description}
-                      onChange={handleSpecialtyInputChange}
-                      placeholder="Введите описание специальности"
-                      rows={3}
                     />
                   </div>
                   <div className="form-group">
@@ -546,7 +586,7 @@ const AddUniversityPage = () => {
                     <input
                       type="number"
                       name="entScore"
-                      value={specialtyForm.entScore}
+                      value={specialtyForm.ent_min || ''}
                       onChange={handleSpecialtyInputChange}
                       placeholder="Введите балл ЕНТ"
                       min="0"
@@ -570,10 +610,9 @@ const AddUniversityPage = () => {
               specialties.map((specialty, index) => (
                 <div key={index} className="specialty-item">
                   <h3>
-                    {specialty.name} ({specialty.code})
+                    {specialty.spec_name_eng} ({specialty.spec_code})
                   </h3>
-                  <p>{specialty.description || 'Описание отсутствует'}</p>
-                  <p>Минимальный балл ЕНТ: {specialty.entScore}</p>
+                  <p>Минимальный балл ЕНТ: {specialty.ent_min}</p>
                 </div>
               ))
             )}
