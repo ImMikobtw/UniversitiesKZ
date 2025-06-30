@@ -75,16 +75,16 @@ const RegisterPage = () => {
       return;
     }
 
-    const universityId = parseInt(university, 10);
-    if (isNaN(universityId) || universityId <= 0) {
+    const university_id = parseInt(university, 10);
+    if (isNaN(university_id) || university_id <= 0) {
       setError("Пожалуйста, выберите действительный университет.");
       setIsLoading(false);
       return;
     }
 
     try {
-      console.log("Submitting with:", { firstName, lastName, email, universityId, password });
-      const success = await register(firstName, lastName, email, universityId.toString(), password);
+      console.log("Submitting with:", { firstName, lastName, email, university_id, password });
+      const success = await register(firstName, lastName, email, university_id.toString(), password);
       if (success) {
         navigate("/main");
       } else {

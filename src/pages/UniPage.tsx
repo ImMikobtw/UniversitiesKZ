@@ -10,19 +10,19 @@ const UniPage = () => {
   const [university, setUniversity] = useState<any>(null);
   const [error, setError] = useState<string>('');
   const [viewMode, setViewMode] = useState<'card' | 'full'>('card');
-  const { universityId } = useAuth();
+  const { university_id } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-  if (!universityId) {
+  if (!university_id) {
     setError('University information not available.');
     return;
   }
 
-  api.get(`/api/public/universities/${universityId}`)
+  api.get(`/api/public/universities/${university_id}`)
     .then((response) => {
       setUniversity({
-        universityId: response.data.university_id,
+        university_id: response.data.university_id,
         name_kz: response.data.uni_name_kz,
         name_ru: response.data.uni_name_rus,
         abbreviation_kz: response.data.uni_short_kz,
@@ -46,7 +46,7 @@ const UniPage = () => {
       console.error('Ошибка при получении университета:', err);
       setError('University not found.');
     });
-}, [universityId]);
+}, [university_id]);
 
 
   const handleEdit = (code: string) => {

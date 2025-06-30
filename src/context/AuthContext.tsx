@@ -13,14 +13,14 @@ interface AuthContextType {
   register: (firstName: string, lastName: string, Email: string, university: string, Password: string) => Promise<boolean>;
   logout: () => void;
   getToken: () => string | null;
-  universityId?: number;
+  university_id?: number;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [universityId, setUniversityId] = useState<number | undefined>(undefined);
+  const [university_id, setUniversityId] = useState<number | undefined>(undefined);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       api.get('/api/profile')
         .then((response) => {
           setIsAuthenticated(true);
-          setUniversityId(response.data.uni_id || 1);
+          setUniversityId(response.data.university_id || 1);
         })
         .catch(() => {
           localStorage.removeItem('accessToken');
@@ -59,8 +59,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const register = async (firstName: string, lastName: string, email: string, university: string, password: string) => {
     try {
-      const universityId = parseInt(university, 10);
-      if (isNaN(universityId)) {
+      const university_id = parseInt(university, 10);
+      if (isNaN(university_id)) {
         throw new Error("ID университета должен быть числом.");
       }
 
@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         first_name: firstName,
         last_name: lastName,
         Email: email,
-        university_id: universityId,
+        university_id: university_id,
         Password: password,
       });
       const { token, user } = response.data;
@@ -102,7 +102,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         register,
         logout,
         getToken,
-        universityId,
+        university_id,
       }}
     >
       {children}
