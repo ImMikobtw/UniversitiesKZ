@@ -10,44 +10,45 @@ const UniPage = () => {
   const [university, setUniversity] = useState<any>(null);
   const [error, setError] = useState<string>('');
   const [viewMode, setViewMode] = useState<'card' | 'full'>('card');
-  const { universityId } = useAuth();
+  const { universityId, isLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-  if (!universityId) {
-    setError('University information not available.');
-    return;
-  }
+    if (isLoading) return; // Ждём, пока профиль загрузится
 
-  api.get(`/api/public/universities/${universityId}`)
-    .then((response) => {
-      setUniversity({
-        universityId: response.data.university_id,
-        name_kz: response.data.uni_name_kz,
-        name_ru: response.data.uni_name_rus,
-        abbreviation_kz: response.data.uni_short_kz,
-        abbreviation_ru: response.data.uni_short_rus,
-        status: response.data.uni_status,
-        address: response.data.uni_address,
-        website: response.data.uni_website,
-        phone: response.data.uni_phone_number,
-        email: response.data.uni_email,
-        whatsapp: response.data.uni_whatsapp,
-        code: response.data.uni_code,
-        student_count: response.data.students_number,
-        qs_score: response.data.qs_rate,
-        logo_url: response.data.logo_path,
-        map_point: response.data.map_point,
-        description: response.data.uni_description,
-        services: [], // если появятся — добавишь
+    if (!universityId) {
+      setError('University information not available.');
+      return;
+    }
+
+    api.get(`/api/public/universities/${universityId}`)
+      .then((response) => {
+        setUniversity({
+          universityId: response.data.university_id,
+          name_kz: response.data.uni_name_kz,
+          name_ru: response.data.uni_name_rus,
+          abbreviation_kz: response.data.uni_short_kz,
+          abbreviation_ru: response.data.uni_short_rus,
+          status: response.data.uni_status,
+          address: response.data.uni_address, // Исправлено с uni_adress
+          website: response.data.uni_website,
+          phone: response.data.uni_phone_number,
+          email: response.data.uni_email,
+          whatsapp: response.data.uni_whatsapp,
+          code: response.data.uni_code,
+          student_count: response.data.students_number,
+          ent_score: response.data.ent_min,
+          qs_score: response.data.qs_rate,
+          logo_url: response.data.logo_path,
+          map_point: response.data.map_point,
+          description: response.data.uni_description,
+          services: [],
+        });
+      })
+      .catch(() => {
+        setError('University not found.');
       });
-    })
-    .catch((err) => {
-      console.error('Ошибка при получении университета:', err);
-      setError('University not found.');
-    });
-}, [universityId]);
-
+  }, [universityId, isLoading]);
 
   const handleEdit = (code: string) => {
     navigate(`/add-university?code=${code}`);
@@ -57,12 +58,16 @@ const UniPage = () => {
     setViewMode((prev) => (prev === 'card' ? 'full' : 'card'));
   };
 
+  if (isLoading) {
+    return <div className="uni-page loading">Loading profile...</div>;
+  }
+
   if (error) {
     return <div className="uni-page error">{error}</div>;
   }
 
   if (!university) {
-    return <div className="uni-page loading">Loading...</div>;
+    return <div className="uni-page loading">Loading university...</div>;
   }
 
   return (

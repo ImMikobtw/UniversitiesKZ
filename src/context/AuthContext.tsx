@@ -9,8 +9,9 @@ interface BackendError {
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (Email: string, Password: string) => Promise<boolean>;
-  register: (firstName: string, lastName: string, Email: string, university: string, Password: string) => Promise<boolean>;
+  isLoading: boolean; // Новое поле для состояния загрузки
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (firstName: string, lastName: string, email: string, university: string, password: string) => Promise<boolean>;
   logout: () => void;
   getToken: () => string | null;
   universityId?: number;
@@ -20,6 +21,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true); // Изначально true
   const [universityId, setUniversityId] = useState<number | undefined>(undefined);
   const navigate = useNavigate();
 
@@ -29,24 +31,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       api.get('/api/profile')
         .then((response) => {
           setIsAuthenticated(true);
-          setUniversityId(response.data.uni_id || 1);
+          setUniversityId(response.data.university_id); // Устанавливаем university_id из ответа
+          setIsLoading(false); // Завершаем загрузку
         })
         .catch(() => {
           localStorage.removeItem('accessToken');
           setIsAuthenticated(false);
           setUniversityId(undefined);
+          setIsLoading(false); // Завершаем загрузку даже при ошибке
+          navigate('/login'); // Перенаправляем на логин при ошибке
         });
+    } else {
+      setIsLoading(false); // Если токена нет, завершаем загрузку
     }
-  }, []);
+  }, [navigate]);
 
-  const login = async (Email: string, Password: string) => {
+  const login = async (email: string, password: string) => {
     try {
-      console.log("Sending login request with:", { Email, Password });
-      const response = await api.post('/auth/login', { Email, Password });
+      console.log("Sending login request with:", { email, password });
+      const response = await api.post('/auth/login', { email, password });
       const { token } = response.data;
       console.log("Login successful, received token:", token);
       localStorage.setItem('accessToken', token);
       setIsAuthenticated(true);
+      // Получаем university_id после логина
+      const profileResponse = await api.get('/api/profile');
+      setUniversityId(profileResponse.data.university_id);
       navigate('/main');
       return true;
     } catch (error) {
@@ -67,9 +77,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await api.post('/auth/register', {
         first_name: firstName,
         last_name: lastName,
-        Email: email,
+        email: email, // Исправлено с user_email
         university_id: universityId,
-        Password: password,
+        password: password, // Исправлено с user_password
       });
       const { token, user } = response.data;
       localStorage.setItem('accessToken', token);
@@ -87,6 +97,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem('accessToken');
     setIsAuthenticated(false);
     setUniversityId(undefined);
+    setIsLoading(false);
     navigate('/login');
   };
 
@@ -98,6 +109,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     <AuthContext.Provider
       value={{
         isAuthenticated,
+        isLoading, // Добавляем в контекст
         login,
         register,
         logout,
