@@ -30,7 +30,7 @@ const RegisterPage = () => {
     const fetchUniversities = async () => {
       setIsLoadingUniversities(true);
       try {
-        const response = await api.get("/universities");
+        const response = await api.get("api/public/universities");
         console.log("API Response for universities:", response.data);
         const validUniversities = response.data.filter((uni: University) => {
           const id = uni.university_id ?? uni.id;
