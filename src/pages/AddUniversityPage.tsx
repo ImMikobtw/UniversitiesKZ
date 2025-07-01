@@ -17,23 +17,23 @@ interface FormData {
   uni_name_rus: string;
   uni_short_kz: string;
   uni_short_rus: string;
-  uni_status: number; // Changed to number to match backend
-  uni_address: string; // Fixed spelling from 'adress'
+  uni_status: number;
+  uni_address: string;
   uni_website: string;
   uni_phone_number: string;
   uni_email: string;
   uni_whatsapp: string;
   uni_code: string;
   uni_description: string;
-  uni_description_kz: string; // Added missing field
+  uni_description_kz: string;
   students_number?: number;
   ent_min?: number;
-  qs_rate?: number; // Changed to number
+  qs_rate?: number;
   logo_path: string;
   gallery_path: string;
   map_point: string;
-  cookies?: number; // Added missing field
-  status_id: number; // Added required foreign key
+  cookies?: number;
+  status_id: number;
 }
 
 interface Specialty {
@@ -47,8 +47,8 @@ interface Specialty {
   scholarship: number;
   spec_duration: number;
   ent_min: number;
-  type_id: number; // Added required foreign key
-  university_id: number; // Fixed field name
+  type_id: number;
+  university_id: number;
 }
 
 const AddUniversityPage = () => {
@@ -60,7 +60,7 @@ const AddUniversityPage = () => {
     uni_name_rus: '',
     uni_short_kz: '',
     uni_short_rus: '',
-    uni_status: 1, // Default status
+    uni_status: 1,
     uni_address: '',
     uni_website: '',
     uni_phone_number: '',
@@ -76,7 +76,7 @@ const AddUniversityPage = () => {
     students_number: undefined,
     qs_rate: undefined,
     cookies: 0,
-    status_id: 1, // Default status_id
+    status_id: 1,
   });
   
   const [specialties, setSpecialties] = useState<Specialty[]>([]);
@@ -90,7 +90,7 @@ const AddUniversityPage = () => {
     scholarship: 0,
     spec_duration: 4,
     ent_min: 0,
-    type_id: 1, // Default type_id
+    type_id: 1,
     university_id: 0,
   });
   const [error, setError] = useState<string>('');
@@ -99,10 +99,10 @@ const AddUniversityPage = () => {
     const queryParams = new URLSearchParams(location.search);
     const university_id = queryParams.get('university_id');
     if (university_id) {
-      // Use the correct public endpoint
       api.get(`/api/public/universities/${university_id}`)
         .then((response) => {
           const uni = response.data;
+          console.log('Loaded university data:', uni); // Отладка
           setFormData({
             university_id: uni.university_id,
             uni_name_kz: uni.uni_name_kz || '',
@@ -126,16 +126,6 @@ const AddUniversityPage = () => {
             cookies: uni.cookies || 0,
             status_id: uni.status_id || 1,
           });
-          
-          /*
-          api.get(`/api/specialties?university_id=${university_id}`)
-            .then((specResponse) => {
-              setSpecialties(specResponse.data);
-            })
-            .catch(() => {
-              setError('Failed to load specialties');
-            });
-          */
         })
         .catch((err: unknown) => {
           const error = err as AxiosError<BackendError>;
@@ -146,6 +136,7 @@ const AddUniversityPage = () => {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    console.log(`Input changed: ${name}=${value}`); // Отладка
     setFormData((prev) => ({
       ...prev,
       [name]: (name === 'students_number' || name === 'qs_rate' || name === 'uni_status' || name === 'status_id' || name === 'cookies') 
@@ -179,7 +170,6 @@ const AddUniversityPage = () => {
     }
 
     try {
-      // Create data object that matches backend University model exactly
       const data = {
         university_id: formData.university_id,
         uni_name_kz: formData.uni_name_kz,
@@ -205,7 +195,7 @@ const AddUniversityPage = () => {
       };
 
       if (formData.university_id) {
-        // Note: You'll need to add PUT endpoint for updating universities
+        // Для редактирования используем PUT (нужен соответствующий эндпоинт в бэкенде)
         await api.put(`/api/universities/${formData.university_id}`, data);
       } else {
         const response = await api.post('/api/universities', data);
@@ -224,6 +214,7 @@ const AddUniversityPage = () => {
 
   const handleSpecialtyInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+    console.log(`Specialty input changed: ${name}=${value}`); // Отладка
     setSpecialtyForm((prev) => ({
       ...prev,
       [name]: (name === 'ent_min' || name === 'scholarship' || name === 'spec_duration' || name === 'type_id' || name === 'university_id') 
@@ -264,7 +255,7 @@ const AddUniversityPage = () => {
         spec_duration: specialtyForm.spec_duration,
         ent_min: specialtyForm.ent_min,
         type_id: specialtyForm.type_id,
-        university_id: formData.university_id, // Fixed field name
+        university_id: formData.university_id,
       };
 
       await api.post('/api/specialities', newSpecialty);
@@ -290,6 +281,13 @@ const AddUniversityPage = () => {
       setError(error.response?.data?.error || 'Failed to add specialty');
     }
   };
+
+  // Маппинг значений uni_status для отображения в select
+  const statusOptions = [
+    { value: 1, label: 'Государственный' },
+    { value: 2, label: 'Автономный' },
+    { value: 3, label: 'Частный' },
+  ];
 
   return (
     <div className="add-university-page">
@@ -331,7 +329,7 @@ const AddUniversityPage = () => {
                   <label>Название (KZ)</label>
                   <input
                     type="text"
-                    name="name_kz"
+                    name="uni_name_kz"
                     value={formData.uni_name_kz}
                     onChange={handleInputChange}
                     placeholder="Введите название на казахском"
@@ -342,7 +340,7 @@ const AddUniversityPage = () => {
                   <label>Название (RU)</label>
                   <input
                     type="text"
-                    name="name_rus"
+                    name="uni_name_rus"
                     value={formData.uni_name_rus}
                     onChange={handleInputChange}
                     placeholder="Введите название на русском"
@@ -353,7 +351,7 @@ const AddUniversityPage = () => {
                   <label>Аббревиатура (KZ)</label>
                   <input
                     type="text"
-                    name="short_kz"
+                    name="uni_short_kz"
                     value={formData.uni_short_kz}
                     onChange={handleInputChange}
                     placeholder="Введите аббревиатуру на казахском"
@@ -364,7 +362,7 @@ const AddUniversityPage = () => {
                   <label>Аббревиатура (RU)</label>
                   <input
                     type="text"
-                    name="short_rus"
+                    name="uni_short_rus"
                     value={formData.uni_short_rus}
                     onChange={handleInputChange}
                     placeholder="Введите аббревиатуру на русском"
@@ -374,22 +372,24 @@ const AddUniversityPage = () => {
                 <div className="form-group full-width">
                   <label>Статус</label>
                   <select
-                    name="status"
+                    name="uni_status"
                     value={formData.uni_status}
                     onChange={handleInputChange}
                     required
                   >
                     <option value="">Выберите статус</option>
-                    <option value="государственный">Государственный</option>
-                    <option value="автономный">Автономный</option>
-                    <option value="частный">Частный</option>
+                    {statusOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 <div className="form-group full-width">
                   <label>Адрес</label>
                   <input
                     type="text"
-                    name="adress"
+                    name="uni_address"
                     value={formData.uni_address}
                     onChange={handleInputChange}
                     placeholder="Введите адрес университета"
@@ -406,7 +406,7 @@ const AddUniversityPage = () => {
                   <label>Вебсайт</label>
                   <input
                     type="url"
-                    name="website"
+                    name="uni_website"
                     value={formData.uni_website}
                     onChange={handleInputChange}
                     placeholder="Введите URL вебсайта"
@@ -416,7 +416,7 @@ const AddUniversityPage = () => {
                   <label>Телефон</label>
                   <input
                     type="tel"
-                    name="phone_number"
+                    name="uni_phone_number"
                     value={formData.uni_phone_number}
                     onChange={handleInputChange}
                     placeholder="Введите номер телефона"
@@ -426,7 +426,7 @@ const AddUniversityPage = () => {
                   <label>Email</label>
                   <input
                     type="email"
-                    name="email"
+                    name="uni_email"
                     value={formData.uni_email}
                     onChange={handleInputChange}
                     placeholder="Введите email"
@@ -436,7 +436,7 @@ const AddUniversityPage = () => {
                   <label>WhatsApp</label>
                   <input
                     type="tel"
-                    name="whatsapp"
+                    name="uni_whatsapp"
                     value={formData.uni_whatsapp}
                     onChange={handleInputChange}
                     placeholder="Введите номер WhatsApp"
@@ -452,7 +452,7 @@ const AddUniversityPage = () => {
                   <label>Код университета</label>
                   <input
                     type="text"
-                    name="code"
+                    name="uni_code"
                     value={formData.uni_code}
                     onChange={handleInputChange}
                     placeholder="Введите код университета"
@@ -484,11 +484,12 @@ const AddUniversityPage = () => {
                 <div className="form-group">
                   <label>QS рейтинг</label>
                   <input
-                    type="text"
+                    type="number"
                     name="qs_rate"
-                    value={formData.qs_rate}
+                    value={formData.qs_rate || ''}
                     onChange={handleInputChange}
-                    placeholder="Введите рейтинг QS (например, 301-350)"
+                    placeholder="Введите рейтинг QS"
+                    min="0"
                   />
                 </div>
                 <div className="form-group full-width">
@@ -504,10 +505,20 @@ const AddUniversityPage = () => {
                 <div className="form-group full-width">
                   <label>Описание</label>
                   <textarea
-                    name="description"
+                    name="uni_description"
                     value={formData.uni_description}
                     onChange={handleInputChange}
                     placeholder="Введите описание университета"
+                    rows={5}
+                  />
+                </div>
+                <div className="form-group full-width">
+                  <label>Описание (KZ)</label>
+                  <textarea
+                    name="uni_description_kz"
+                    value={formData.uni_description_kz}
+                    onChange={handleInputChange}
+                    placeholder="Введите описание на казахском"
                     rows={5}
                   />
                 </div>
@@ -563,7 +574,7 @@ const AddUniversityPage = () => {
                     <label>Код специальности</label>
                     <input
                       type="text"
-                      name="code"
+                      name="spec_code"
                       value={specialtyForm.spec_code}
                       onChange={handleSpecialtyInputChange}
                       placeholder="Введите код специальности"
@@ -571,25 +582,102 @@ const AddUniversityPage = () => {
                     />
                   </div>
                   <div className="form-group">
-                    <label>Название специальности</label>
+                    <label>Название (KZ)</label>
                     <input
                       type="text"
-                      name="name"
+                      name="spec_name_kz"
+                      value={specialtyForm.spec_name_kz}
+                      onChange={handleSpecialtyInputChange}
+                      placeholder="Введите название на казахском"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Название (RU)</label>
+                    <input
+                      type="text"
+                      name="spec_name_rus"
+                      value={specialtyForm.spec_name_rus}
+                      onChange={handleSpecialtyInputChange}
+                      placeholder="Введите название на русском"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Название (ENG)</label>
+                    <input
+                      type="text"
+                      name="spec_name_eng"
                       value={specialtyForm.spec_name_eng}
                       onChange={handleSpecialtyInputChange}
-                      placeholder="Введите название специальности"
+                      placeholder="Введите название на английском"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Предметы</label>
+                    <input
+                      type="text"
+                      name="subjects"
+                      value={specialtyForm.subjects}
+                      onChange={handleSpecialtyInputChange}
+                      placeholder="Введите предметы"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Тип специальности</label>
+                    <select
+                      name="spec_type"
+                      value={specialtyForm.spec_type}
+                      onChange={handleSpecialtyInputChange}
                       required
+                    >
+                      <option value="бакалавриат">Бакалавриат</option>
+                      <option value="магистратура">Магистратура</option>
+                      <option value="докторантура">Докторантура</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Стипендия</label>
+                    <input
+                      type="number"
+                      name="scholarship"
+                      value={specialtyForm.scholarship}
+                      onChange={handleSpecialtyInputChange}
+                      placeholder="Введите сумму стипендии"
+                      min="0"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Продолжительность (годы)</label>
+                    <input
+                      type="number"
+                      name="spec_duration"
+                      value={specialtyForm.spec_duration}
+                      onChange={handleSpecialtyInputChange}
+                      placeholder="Введите продолжительность"
+                      min="1"
                     />
                   </div>
                   <div className="form-group">
                     <label>Минимальный балл ЕНТ</label>
                     <input
                       type="number"
-                      name="entScore"
-                      value={specialtyForm.ent_min || ''}
+                      name="ent_min"
+                      value={specialtyForm.ent_min}
                       onChange={handleSpecialtyInputChange}
                       placeholder="Введите балл ЕНТ"
                       min="0"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Тип ID</label>
+                    <input
+                      type="number"
+                      name="type_id"
+                      value={specialtyForm.type_id}
+                      onChange={handleSpecialtyInputChange}
+                      placeholder="Введите ID типа"
+                      min="1"
                     />
                   </div>
                 </div>
@@ -610,9 +698,12 @@ const AddUniversityPage = () => {
               specialties.map((specialty, index) => (
                 <div key={index} className="specialty-item">
                   <h3>
-                    {specialty.spec_name_eng} ({specialty.spec_code})
+                    {specialty.spec_name_rus} ({specialty.spec_code})
                   </h3>
+                  <p>Название (KZ): {specialty.spec_name_kz}</p>
+                  <p>Название (ENG): {specialty.spec_name_eng}</p>
                   <p>Минимальный балл ЕНТ: {specialty.ent_min}</p>
+                  <p>Тип: {specialty.spec_type}</p>
                 </div>
               ))
             )}
